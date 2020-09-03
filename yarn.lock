@@ -10310,9 +10310,10 @@ got@^9.6.0:
     to-readable-stream "^1.0.0"
     url-parse-lax "^3.0.0"
 
-"gotrue-js@git://github.com/netlify/gotrue-js.git#28df09cfcac505feadcb1719714d2a9507cf68eb":
-  version "0.9.24"
-  resolved "git://github.com/netlify/gotrue-js.git#28df09cfcac505feadcb1719714d2a9507cf68eb"
+gotrue-js@^0.9.26:
+  version "0.9.26"
+  resolved "https://registry.yarnpkg.com/gotrue-js/-/gotrue-js-0.9.26.tgz#c5e39fec1539d12893042979435972847a2a5f79"
+  integrity sha512-UC1MIyyjfPxwpyd8X/xeigtUUaHI3+0dXvUEjymBfN3wE2MUfANVyTtO5HMwlBGlEFwbXuH0D1h6EExcvm/nug==
   dependencies:
     micro-api-client "^3.2.1"
 
@@ -18667,19 +18668,7 @@ websocket-extensions@>=0.1.1:
   resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.4.tgz#7f8473bc839dfd87608adb95d7eb075211578a42"
   integrity sha512-OqedPIGOfsDlo31UNwYbCFMSaO9m9G/0faIHj5/dZFDMFqPTcx6UwqyOy3COEaEOg/9VsGIpdqn62W5KhoKSpg==
 
-websocket@1.0.32:
-  version "1.0.32"
-  resolved "https://registry.yarnpkg.com/websocket/-/websocket-1.0.32.tgz#1f16ddab3a21a2d929dec1687ab21cfdc6d3dbb1"
-  integrity sha512-i4yhcllSP4wrpoPMU2N0TQ/q0O94LRG/eUQjEAamRltjQ1oT1PFFKOG4i877OlJgCG8rw6LrrowJp+TYCEWF7Q==
-  dependencies:
-    bufferutil "^4.0.1"
-    debug "^2.2.0"
-    es5-ext "^0.10.50"
-    typedarray-to-buffer "^3.1.5"
-    utf-8-validate "^5.0.2"
-    yaeti "^0.0.6"
-
-websocket@^1.0.31:
+websocket@1.0.32, websocket@^1.0.31:
   version "1.0.32"
   resolved "https://registry.yarnpkg.com/websocket/-/websocket-1.0.32.tgz#1f16ddab3a21a2d929dec1687ab21cfdc6d3dbb1"
   integrity sha512-i4yhcllSP4wrpoPMU2N0TQ/q0O94LRG/eUQjEAamRltjQ1oT1PFFKOG4i877OlJgCG8rw6LrrowJp+TYCEWF7Q==
