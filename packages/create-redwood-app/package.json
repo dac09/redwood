@@ -7,7 +7,7 @@
     "dist"
   ],
   "dependencies": {
-    "@babel/runtime-corejs3": "^7.9.2",
+    "@babel/runtime-corejs3": "^7.12.1",
     "@redwoodjs/internal": "^0.19.4",
     "axios": "^0.20.0",
     "chalk": "^4.1.0",
