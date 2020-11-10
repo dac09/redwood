@@ -17,7 +17,7 @@
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-react": "^7.10.4",
     "@babel/preset-typescript": "^7.10.4",
-    "@babel/runtime-corejs3": "^7.11.2",
+    "@babel/runtime-corejs3": "^7.12.5",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
     "@prisma/cli": "2.9.0",
     "@redwoodjs/cli": "^0.20.0",
