@@ -111,7 +111,7 @@ export class AuthProvider extends React.Component<
     // Add observer if the auth client supports it
     // @TODO: Do we need to worry about cancelling the event handler?
     // I don't think AuthProvider ever unmounts
-    if (this.rwClient.onTokenChange) {
+    if (this.rwClient?.onTokenChange) {
       this.rwClient.onTokenChange(() => {
         this.getToken()
       })
