@@ -4,12 +4,12 @@ import path from 'path'
 import React from 'react'
 
 import babelRequireHook from '@babel/register'
-import prettier from 'prettier'
 import ReactDOMServer from 'react-dom/server'
 
 import { getPaths } from '@redwoodjs/internal'
 import { RedwoodProvider } from '@redwoodjs/web'
 
+import RoutesPrerenderPlugin from './babel-plugin-redwood-prerender-routes'
 import { getRootHtmlPath, registerShims, writeToDist } from './internal'
 
 interface PrerenderParams {
@@ -37,6 +37,12 @@ babelRequireHook({
       },
     ],
   ],
+  overrides: [
+    {
+      test: ['./web/src/Routes.js', './web/src/Routes.tsx'],
+      plugins: [[RoutesPrerenderPlugin]],
+    },
+  ],
   only: [rwWebPaths.base],
   ignore: ['node_modules'],
   cache: false,
@@ -51,7 +57,7 @@ export const runPrerender = async ({
 
   const indexContent = fs.readFileSync(getRootHtmlPath()).toString()
 
-  const { default: ComponentToPrerender } = await import(inputComponentPath)
+  // const { default: ComponentToPrerender } = await import(inputComponentPath)
 
   // @MARK
   // we render <Routes> to build the list of routes e.g. routes.home()
@@ -62,7 +68,7 @@ export const runPrerender = async ({
     <>
       <RedwoodProvider>
         <Routes />
-        <ComponentToPrerender />
+        {/* <Routes prerender={{ path: '/' }} /> */}
       </RedwoodProvider>
     </>
   )
@@ -74,8 +80,8 @@ export const runPrerender = async ({
   if (dryRun) {
     console.log('::: Dry run, not writing changes :::')
     console.log(`::: 🚀 Prerender output for ${inputComponentPath} ::: `)
-    const prettyOutput = prettier.format(renderOutput, { parser: 'html' })
-    console.log(prettyOutput)
+    // const prettyOutput = prettier.format(renderOutput, { parser: 'html' })
+    // console.log(prettyOutput)
     console.log('::: --- ::: ')
 
     return
