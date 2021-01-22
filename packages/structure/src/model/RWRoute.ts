@@ -60,6 +60,14 @@ export class RWRoute extends BaseNode {
     return this.prerender
   }
 
+  @lazy() get whileLoadingAttr() {
+    return this.getRawAttr('whileLoading')
+  }
+
+  @lazy() get pageAttr() {
+    return this.getRawAttr('page')
+  }
+
   @lazy() get hasPreRenderInfo() {
     // TODO: this is just a placeholder / reminder
     return false
@@ -254,6 +262,15 @@ export class RWRoute extends BaseNode {
       }
     }
     return false
+  }
+
+  private getRawAttr(name: string) {
+    const a = this.jsxNode.getAttribute(name)
+    if (!a) return undefined
+    if (tsm.Node.isJsxAttribute(a)) {
+      return a.getInitializer()
+    }
+    return undefined
   }
 
   private getStringAttr(name: string) {
