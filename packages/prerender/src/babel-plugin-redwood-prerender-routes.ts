@@ -1,5 +1,6 @@
 import type { PluginObj, types } from '@babel/core'
 import { parse } from '@babel/parser'
+import generate from '@babel/generator'
 // import template from '@babel/template'
 
 import { getSwitchStatementForPrerender } from './router'
@@ -17,10 +18,11 @@ export default function (babel: any): PluginObj {
         if (!t.isIdentifier(id)) return
         const name = id.name
         if (name === 'Routes') {
-          console.log('AST to insert', getASTToInsert())
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          ;(path.get('body') as any).unshiftContainer('body', getASTToInsert())
-          // console.log(path.get('body'))
+					;(path.get('body') as any).unshiftContainer('body', getASTToInsert())
+
+					console.log('Babel output -> ', generate(parent).code)
+
         }
       },
       FunctionDeclaration(path) {
@@ -32,11 +34,19 @@ export default function (babel: any): PluginObj {
   }
 
   function getASTToInsert() {
-    const switchStatement = getSwitchStatementForPrerender()
-    console.log(switchStatement)
-    // const z = parse(`function bbb(){${switchStatement}}`)
-    const z = parse(`console.log('hello');`)
+		const switchStatement = getSwitchStatementForPrerender()
+		console.log(switchStatement)
 
-    return z
+		// Wrap in a function so it can be parsed
+		const z = parse(`function blockToBeRemoved(){${switchStatement}}`)
+		// const code = `console.log('hello world');`
+		// const z = parse(code)
+
+		// @ts-ignore-next-line
+		const switchStatementAst = z.program.body[0].body.body[0]
+
+		console.log('AST Switch output -> ', generate(switchStatementAst).code)
+
+    return switchStatementAst
   }
 }
