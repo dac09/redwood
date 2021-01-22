@@ -1,7 +1,7 @@
 import type { PluginObj, types } from '@babel/core'
-import { parse } from '@babel/parser'
+// import { parse } from '@babel/parser'
 import generate from '@babel/generator'
-// import template from '@babel/template'
+import template from '@babel/template'
 
 import { getSwitchStatementForPrerender } from './router'
 
@@ -35,18 +35,17 @@ export default function (babel: any): PluginObj {
 
   function getASTToInsert() {
 		const switchStatement = getSwitchStatementForPrerender()
-		console.log(switchStatement)
 
 		// Wrap in a function so it can be parsed
-		const z = parse(`function blockToBeRemoved(){${switchStatement}}`)
+		const switchAst = template.ast(switchStatement)
 		// const code = `console.log('hello world');`
-		// const z = parse(code)
+		// const switchAst = parse(code)
 
 		// @ts-ignore-next-line
-		const switchStatementAst = z.program.body[0].body.body[0]
+		// const switchStatementAst = z.program.body[0].body.body[0]
 
-		console.log('AST Switch output -> ', generate(switchStatementAst).code)
+		// console.log('AST Switch output -> ', generate(switchAst).code)
 
-    return switchStatementAst
+    return switchAst
   }
 }

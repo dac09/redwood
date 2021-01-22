@@ -31,14 +31,25 @@ export const getSwitchStatementForPrerender = () => {
       ? route.whileLoadingAttr
       : route.pageAttr
     if (typeof componentToRenderForPath === 'undefined') continue
+
+    // @TODO
+    // help aldo :)
+    const compoenentEscaped = componentToRenderForPath
+      .getText()
+      .replace('{', '')
+      .replace('}', '')
+
     const key = route.path
     lines.push(`
 		case ${JSON.stringify(key)}:
-			return (${componentToRenderForPath.getText()});
+			return (${compoenentEscaped});
 		`)
   }
 
+  // @TODO
+  // aldo, help :D, what context is console.log running in?
   return `
+	console.log('xxx', arguments[0].default);
 	if (arguments.length > 0 && arguments[0].prerender){
 		switch(arguments[0].prerender?.path){
 			${lines.join('\n')}

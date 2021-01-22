@@ -4,6 +4,7 @@ import path from 'path'
 import React from 'react'
 
 import babelRequireHook from '@babel/register'
+import prettier from 'prettier'
 import ReactDOMServer from 'react-dom/server'
 
 import { getPaths } from '@redwoodjs/internal'
@@ -80,8 +81,8 @@ export const runPrerender = async ({
   if (dryRun) {
     console.log('::: Dry run, not writing changes :::')
     console.log(`::: 🚀 Prerender output for ${inputComponentPath} ::: `)
-    // const prettyOutput = prettier.format(renderOutput, { parser: 'html' })
-    // console.log(prettyOutput)
+    const prettyOutput = prettier.format(renderOutput, { parser: 'html' })
+    console.log(prettyOutput)
     console.log('::: --- ::: ')
 
     return
