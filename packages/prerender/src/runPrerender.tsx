@@ -10,6 +10,7 @@ import ReactDOMServer from 'react-dom/server'
 import { getPaths } from '@redwoodjs/internal'
 import { RedwoodApolloProvider } from '@redwoodjs/web/dist/components/RedwoodApolloProvider'
 
+import PrerenderRoutesImportPlugin from './babel-plugin-redwood-prerender-require-routes'
 import { getRootHtmlPath, registerShims, writeToDist } from './internal'
 
 interface PrerenderParams {
@@ -36,6 +37,12 @@ babelRequireHook({
         },
       },
     ],
+  ],
+  overrides: [
+    {
+      test: ['./web/src/Routes.js', './web/src/Routes.tsx'],
+      plugins: [[PrerenderRoutesImportPlugin]],
+    },
   ],
   only: [rwWebPaths.base],
   ignore: ['node_modules'],
@@ -78,8 +85,8 @@ export const runPrerender = async ({
     console.log('::: Dry run, not writing changes :::')
     console.log(`::: 🚀 Prerender output for ${inputComponentPath} ::: `)
     const prettyOutput = prettier.format(renderOutput, { parser: 'html' })
-    console.log(prettyOutput)
-    console.log('::: --- ::: ')
+    // console.log(prettyOutput)
+    if (prettyOutput) console.log('::: --- ::: ')
 
     return prettyOutput
   }
