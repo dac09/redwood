@@ -12,6 +12,7 @@ import { getPaths } from '@redwoodjs/internal'
 // This is caused by the Router TS rewrite
 import { LocationProvider } from '@redwoodjs/router/dist/index'
 
+import mediaImportsPlugin from './babel-plugin-redwood-prerender-process-media-imports'
 import { getRootHtmlPath, registerShims, writeToDist } from './internal'
 
 interface PrerenderParams {
@@ -37,6 +38,7 @@ babelRequireHook({
         },
       },
     ],
+    [mediaImportsPlugin],
   ],
   only: [rwWebPaths.base],
   ignore: ['node_modules'],
