@@ -13,6 +13,9 @@ type WrapperType<WTProps> = (
 type ReduceType = ReactElement | undefined
 
 type SetProps<P> = P & {
+  // Let's you define the props that Set will take
+  // based on what is in wrap
+  // e.g. <Set <{theme: string} wrap={ThemeProvider}>
   wrap?: WrapperType<P> | WrapperType<P>[]
   /**
    * `Routes` nested in a `<Set>` with `private` specified require
@@ -108,21 +111,14 @@ export function Set<WrapperProps>(props: SetProps<WrapperProps>) {
   return null
 }
 
-type PrivateProps<P> = Omit<
-  SetProps<P>,
-  'private' | 'unauthenticated' | 'wrap'
-> & {
-  /** The page name where a user will be redirected when not authenticated */
-  unauthenticated: string
-  wrap?: WrapperType<P> | WrapperType<P>[]
-}
-
-export function Private<WrapperProps>(props: PrivateProps<WrapperProps>) {
+export function Private<PropsForWraps>(props: SetProps<PropsForWraps>) {
   const { children, unauthenticated, role, wrap, ...rest } = props
 
   return (
-    // @ts-expect-error - WrapperProps arbitrary type
-    <Set
+    // @MARK Doesn't matter that we pass any here
+    // Because user's still get a typed Private component
+    // is double generics the issue if we use <Set<PropsForWraps>?
+    <Set<any>
       private
       unauthenticated={unauthenticated}
       role={role}
