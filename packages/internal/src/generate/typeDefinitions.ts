@@ -125,6 +125,7 @@ export const generateMirrorCell = (p: string, rwjsPaths = getPaths()) => {
     })
     return typeDefPath
   }
+  return
 }
 
 const writeTypeDefIncludeFile = (
