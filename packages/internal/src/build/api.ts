@@ -9,7 +9,11 @@ import rimraf from 'rimraf'
 import { findApiFiles } from '../files'
 import { ensurePosixPath, getPaths } from '../paths'
 
-import { getApiSideBabelConfigPath, getApiSideBabelPlugins } from './babel/api'
+import {
+  getApiSideBabelConfigPath,
+  getApiSideBabelPlugins,
+  getApiSideBabelPresets,
+} from './babel/api'
 
 export const buildApi = () => {
   // TODO: Be smarter about caching and invalidating files,
@@ -107,6 +111,7 @@ export const generateProxyFilesForNestedFunction = (prebuiltFile: string) => {
  */
 export const prebuildApiFiles = (srcFiles: string[]) => {
   const rwjsPaths = getPaths()
+  // @NOTE that this includes common plugins + api plugins
   const plugins = getApiSideBabelPlugins()
 
   return srcFiles.map((srcPath) => {
@@ -157,6 +162,7 @@ export const prebuildFile = (
     // when esbuild finds an inline sourcemap, it tries to "combine" it
     // so the final sourcemap (the one that esbuild generates) combines both mappings
     sourceMaps: 'inline',
+    presets: getApiSideBabelPresets(),
     plugins,
   })
   return result

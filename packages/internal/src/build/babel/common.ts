@@ -1,5 +1,7 @@
 import type { TransformOptions, PluginItem } from '@babel/core'
 
+const packageJSON = require('../../../package.json')
+
 export interface RegisterHookOptions {
   /**
    *  Be careful: plugins are a nested array e.g. [[plug1, x, x], [plug2, y, y]].
@@ -29,4 +31,30 @@ interface BabelRegisterOptions extends TransformOptions {
 **/
 export const registerBabel = (options: BabelRegisterOptions) => {
   require('@babel/register')(options)
+}
+
+// @NOTE On the API side: we may not need this once we solve why esbuild isn't shimming correctly
+// These are mainly related to the preset-env/core-js shims
+// On the Web side: TBD
+export const getCommonBabelPlugins = () => {
+  return [
+    ['@babel/plugin-proposal-class-properties', { loose: true }],
+    // Note: The private method loose mode configuration setting must be the
+    // same as @babel/plugin-proposal class-properties.
+    // (https://babeljs.io/docs/en/babel-plugin-proposal-private-methods#loose)
+    ['@babel/plugin-proposal-private-methods', { loose: true }],
+    ['@babel/plugin-proposal-private-property-in-object', { loose: true }],
+    [
+      '@babel/plugin-transform-runtime',
+      {
+        // https://babeljs.io/docs/en/babel-plugin-transform-runtime/#core-js-aliasing
+        // Setting the version here also requires `@babel/runtime-corejs3`
+        corejs: { version: 3, proposals: true },
+        // https://babeljs.io/docs/en/babel-plugin-transform-runtime/#version
+        // Transform-runtime assumes that @babel/runtime@7.0.0 is installed.
+        // Specifying the version can result in a smaller bundle size.
+        version: packageJSON.dependencies['@babel/runtime-corejs3'],
+      },
+    ],
+  ]
 }
