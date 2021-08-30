@@ -7,7 +7,7 @@
     "webhooks"
   ],
   "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/src/index.d.ts",
   "license": "MIT",
   "dependencies": {
     "@prisma/client": "2.29.1",
