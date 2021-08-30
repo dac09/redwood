@@ -1,4 +1,4 @@
 {
   "main": "./index.js",
-  "types": "../dist/logger/index.d.ts"
+  "types": "../dist/src/logger/index.d.ts"
 }

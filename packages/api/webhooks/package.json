@@ -1,4 +1,4 @@
 {
   "main": "./index.js",
-  "types": "../dist/webhooks/index.d.ts"
+  "types": "../dist/src/webhooks/index.d.ts"
 }
