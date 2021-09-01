@@ -10,7 +10,7 @@
   "devDependencies": {
     "@auth0/auth0-spa-js": "1.16.1",
     "@clerk/clerk-js": "^1.26.0",
-    "@clerk/types": "^1.6.0",
+    "@clerk/types": "^1.10.0",
     "@supabase/supabase-js": "1.21.0",
     "@types/netlify-identity-widget": "1.9.2",
     "@types/react": "17.0.14",
