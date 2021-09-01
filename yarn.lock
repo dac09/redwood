@@ -2610,7 +2610,14 @@
     valid-url "1.0.9"
     ws "7.4.5"
 
-"@graphql-tools/utils@7.10.0", "@graphql-tools/utils@^7.0.0", "@graphql-tools/utils@^7.1.0", "@graphql-tools/utils@^7.1.2", "@graphql-tools/utils@^7.5.0", "@graphql-tools/utils@^7.7.0", "@graphql-tools/utils@^7.7.1", "@graphql-tools/utils@^7.8.1", "@graphql-tools/utils@^7.9.0", "@graphql-tools/utils@^7.9.1":
+"@graphql-tools/utils@8.2.1":
+  version "8.2.1"
+  resolved "https://registry.yarnpkg.com/@graphql-tools/utils/-/utils-8.2.1.tgz#381e79fa04041f91f132d252216adcb3970e3c1e"
+  integrity sha512-xjyetFpDy2/MY8P4+NiE7i1czCrAI36Twjm+jcoBfPctMnJegZkZnLfepmjwYQ92Sv9hnhr+x52OUQAddj29CQ==
+  dependencies:
+    tslib "~2.3.0"
+
+"@graphql-tools/utils@^7.0.0", "@graphql-tools/utils@^7.1.0", "@graphql-tools/utils@^7.1.2", "@graphql-tools/utils@^7.5.0", "@graphql-tools/utils@^7.7.0", "@graphql-tools/utils@^7.7.1", "@graphql-tools/utils@^7.8.1", "@graphql-tools/utils@^7.9.0", "@graphql-tools/utils@^7.9.1":
   version "7.10.0"
   resolved "https://registry.yarnpkg.com/@graphql-tools/utils/-/utils-7.10.0.tgz#07a4cb5d1bec1ff1dc1d47a935919ee6abd38699"
   integrity sha512-d334r6bo9mxdSqZW6zWboEnnOOFRrAPVQJ7LkU8/6grglrbcu6WhwCLzHb90E94JI3TD3ricC3YGbUqIi9Xg0w==
