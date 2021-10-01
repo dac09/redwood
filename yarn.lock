@@ -1753,10 +1753,15 @@
     lodash "^4.17.21"
     snakecase-keys "^3.2.1"
 
-"@clerk/types@1.6.0", "@clerk/types@^1.6.0":
+"@clerk/types@1.6.0":
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/@clerk/types/-/types-1.6.0.tgz#90b96ce6b2c5cd12e13bec4085e8b51720834f63"
   integrity sha512-Q0aTjhGQoyXeJO33OMNni9UaiE6sIO4mA7GSfN9hwwL2jF0gIKgL20nsUN0F/oq+qc4Id8YTUL4iK2Qqj/fdDg==
+
+"@clerk/types@^1.13.2":
+  version "1.13.2"
+  resolved "https://registry.yarnpkg.com/@clerk/types/-/types-1.13.2.tgz#063602482b9e3134a08bfe4b1ea07c8f46d23dae"
+  integrity sha512-n9OeyvuINI5NSkZnw1fo8ti9BNDWiOLPAWcFHTScpDulpHbXpcGpxNJMbp0SgOrXItvbt4eQSR4Fqg7CQjAviw==
 
 "@discoveryjs/json-ext@^0.5.0":
   version "0.5.3"
