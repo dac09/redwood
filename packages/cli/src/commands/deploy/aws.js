@@ -3,6 +3,7 @@ import path from 'path'
 
 import execa from 'execa'
 import Listr from 'listr'
+import VerboseRenderer from 'listr-verbose-renderer'
 import terminalLink from 'terminal-link'
 
 import { getPaths } from '../../lib'
@@ -29,6 +30,11 @@ export const builder = (yargs) => {
       default: 'api',
       type: 'array',
     })
+    .option('verbose', {
+      describe: 'verbosity of logs',
+      default: true,
+      type: 'boolean',
+    })
     .epilogue(
       `Also see the ${terminalLink(
         'Redwood CLI Reference',
@@ -37,7 +43,7 @@ export const builder = (yargs) => {
     )
 }
 
-export const handler = async ({ provider }) => {
+export const handler = async ({ provider, verbose }) => {
   const BASE_DIR = getPaths().base
   const providerData = await import(`./aws-providers/${provider}`)
 
@@ -82,7 +88,7 @@ export const handler = async ({ provider }) => {
           ),
       },
     ].filter(Boolean),
-    { collapse: false }
+    { collapse: false, renderer: verbose && VerboseRenderer }
   )
 
   try {
