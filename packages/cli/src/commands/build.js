@@ -6,7 +6,13 @@ import VerboseRenderer from 'listr-verbose-renderer'
 import rimraf from 'rimraf'
 import terminalLink from 'terminal-link'
 
-import { buildApi, loadAndValidateSdls } from '@redwoodjs/internal'
+import {
+  buildApi,
+  findWebFiles,
+  loadAndValidateSdls,
+  prebuildWebFiles,
+  cleanWebBuild,
+} from '@redwoodjs/internal'
 import { detectPrerenderRoutes } from '@redwoodjs/prerender/detection'
 
 import { getPaths } from '../lib'
@@ -150,6 +156,16 @@ export const handler = async ({
       title: 'Cleaning Web...',
       task: () => {
         rimraf.sync(rwjsPaths.web.dist)
+      },
+    },
+    side.includes('web') && {
+      title: 'Prebuild web...',
+      task: () => {
+        cleanWebBuild()
+        prebuildWebFiles(findWebFiles(), {
+          staticImports: true,
+          skipTranspile: true,
+        })
       },
     },
     side.includes('web') && {

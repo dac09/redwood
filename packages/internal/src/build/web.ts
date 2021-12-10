@@ -3,6 +3,7 @@ import path from 'path'
 
 import { removeSync } from 'fs-extra'
 
+import { findWebAssets } from '../files'
 import { getPaths } from '../paths'
 
 import { prebuildWebFile, Flags } from './babel/web'
@@ -23,7 +24,7 @@ export const cleanWebBuild = () => {
 export const prebuildWebFiles = (srcFiles: string[], flags?: Flags) => {
   const rwjsPaths = getPaths()
 
-  return srcFiles.map((srcPath) => {
+  const builtFiles = srcFiles.map((srcPath) => {
     const relativePathFromSrc = path.relative(rwjsPaths.base, srcPath)
     const dstPath = path
       .join(rwjsPaths.generated.prebuild, relativePathFromSrc)
@@ -39,5 +40,23 @@ export const prebuildWebFiles = (srcFiles: string[], flags?: Flags) => {
     fs.writeFileSync(dstPath, result.code)
 
     return dstPath
+  })
+  copyAssetsToPrebuild()
+
+  return builtFiles
+}
+
+// @TMP: copy images/css/whatver over
+export const copyAssetsToPrebuild = () => {
+  const assets = findWebAssets()
+  const rwjsPaths = getPaths()
+
+  assets.map((assetPath) => {
+    const relativePathFromSrc = path.relative(rwjsPaths.base, assetPath)
+    const dstPath = path
+      .join(rwjsPaths.generated.prebuild, relativePathFromSrc)
+      .replace(/\.(ts)$/, '.js')
+
+    fs.copyFileSync(assetPath, dstPath)
   })
 }

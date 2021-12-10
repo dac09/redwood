@@ -14,13 +14,14 @@ import {
 } from './common'
 
 export const getWebSideBabelPlugins = (
-  { forJest }: Flags = { forJest: false }
+  { forJest, skipTranspile }: Flags = { forJest: false }
 ) => {
   const rwjsPaths = getPaths()
 
   const plugins: TransformOptions['plugins'] = [
     ...getCommonPlugins(),
     // === Import path handling
+    skipTranspile && ['@babel/plugin-syntax-jsx'],
     [
       'babel-plugin-module-resolver',
       {
@@ -93,7 +94,7 @@ export const getWebSideBabelPlugins = (
     ],
 
     // === Handling redwood "magic"
-  ].filter(Boolean)
+  ].filter(Boolean) as babel.PluginItem[]
 
   return plugins
 }
@@ -136,7 +137,7 @@ export const getWebSideOverrides = (
   return overrides as TransformOptions[]
 }
 
-export const getWebSideBabelPresets = () => {
+export const getWebSideBabelPresets = (options: Flags = {}) => {
   let reactPresetConfig = undefined
 
   // This is a special case, where @babel/preset-react needs config
@@ -159,9 +160,9 @@ export const getWebSideBabelPresets = () => {
     )
   }
   return [
-    ['@babel/preset-react', reactPresetConfig],
+    !options.skipTranspile && ['@babel/preset-react', reactPresetConfig],
     ['@babel/preset-typescript', undefined, 'rwjs-babel-preset-typescript'],
-    [
+    !options.skipTranspile && [
       '@babel/preset-env',
       {
         // the targets are set in <userProject>/web/package.json
@@ -179,7 +180,7 @@ export const getWebSideBabelPresets = () => {
       },
       'rwjs-babel-preset-env',
     ],
-  ]
+  ].filter(Boolean) as babel.PluginItem[]
 }
 
 export const getWebSideBabelConfigPath = () => {
@@ -195,6 +196,7 @@ export const getWebSideBabelConfigPath = () => {
 export interface Flags {
   forJest?: boolean // will change the alias for module-resolver plugin
   staticImports?: boolean // will use require instead of import for routes-auto-loader plugin
+  skipTranspile?: boolean // Should transpile JSX and use presetEnv?
 }
 
 export const getWebSideDefaultBabelConfig = (options: Flags = {}) => {
@@ -203,7 +205,7 @@ export const getWebSideDefaultBabelConfig = (options: Flags = {}) => {
   // and merge them because we have specified the filename property, unless babelrc = false
 
   return {
-    presets: getWebSideBabelPresets(),
+    presets: getWebSideBabelPresets(options),
     plugins: getWebSideBabelPlugins(options),
     overrides: getWebSideOverrides(options),
     extends: getWebSideBabelConfigPath(),
