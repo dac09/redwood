@@ -41,6 +41,7 @@ export const handler = async () => {
 
   console.log(`Pretranspiling to ${outputPath}....`)
 
+  // Q: Could we run babel inside bun?
   prebuildWebFiles(
     findWebFiles(),
     {
@@ -55,6 +56,7 @@ export const handler = async () => {
 
   console.log(`Bun bun...`)
 
+  // Q: Maybe have a way of having a hidden index.js
   execa.commandSync('bun bun ./src/index.js', {
     cwd: outputPath,
     shell: true,
@@ -63,6 +65,8 @@ export const handler = async () => {
 
   const pathToIndexHtml = path.join(getPaths().web.base, 'public/index.html')
 
+  // Q: Could we specify the index.html specifically to be somewhere else?
+  // OR automatically insert
   if (!fs.existsSync(pathToIndexHtml)) {
     console.log('Adding index.html with index import')
     fs.writeFileSync(
@@ -90,6 +94,7 @@ export const handler = async () => {
 
   console.log(`Starting bun dev...`)
 
+  // Q: postcss support?
   execa.commandSync('bun', {
     cwd: outputPath,
     shell: true,
