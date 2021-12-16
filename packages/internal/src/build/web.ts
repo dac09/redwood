@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
+import fse from 'fs-extra'
 import { removeSync } from 'fs-extra'
 
 import { findWebAssets } from '../files'
@@ -12,22 +13,37 @@ import { prebuildWebFile, Flags } from './babel/web'
 // This whole file is currently only used in testing
 // we may eventually use this to pretranspile the web side
 
-export const cleanWebBuild = () => {
+export const cleanWebBuild = (outputDir = getPaths().generated.prebuild) => {
   const rwjsPaths = getPaths()
+  const haveWebFolderInOutput = outputDir === getPaths().generated.prebuild
+
   removeSync(rwjsPaths.web.dist)
-  removeSync(path.join(rwjsPaths.generated.prebuild, 'web'))
+  removeSync(
+    haveWebFolderInOutput
+      ? path.join(outputDir, 'web')
+      : path.join(outputDir, 'src')
+  )
 }
 
 /**
  * Remove RedwoodJS "magic" from a user's code leaving JavaScript behind.
  */
-export const prebuildWebFiles = (srcFiles: string[], flags?: Flags) => {
+export const prebuildWebFiles = (
+  srcFiles: string[],
+  flags?: Flags,
+  outputDir = getPaths().generated.prebuild
+) => {
   const rwjsPaths = getPaths()
 
+  const haveWebFolderInOutput = outputDir === getPaths().generated.prebuild
+
   const builtFiles = srcFiles.map((srcPath) => {
-    const relativePathFromSrc = path.relative(rwjsPaths.base, srcPath)
+    const relativePathFromSrc = path.relative(
+      haveWebFolderInOutput ? rwjsPaths.base : rwjsPaths.web.base,
+      srcPath
+    )
     const dstPath = path
-      .join(rwjsPaths.generated.prebuild, relativePathFromSrc)
+      .join(outputDir, relativePathFromSrc)
       .replace(/\.(ts)$/, '.js')
 
     const result = prebuildWebFile(srcPath, flags)
@@ -41,22 +57,36 @@ export const prebuildWebFiles = (srcFiles: string[], flags?: Flags) => {
 
     return dstPath
   })
-  copyAssetsToPrebuild()
 
   return builtFiles
 }
 
 // @TMP: copy images/css/whatver over
-export const copyAssetsToPrebuild = () => {
+export const copyAssetsToPrebuild = (
+  outputDir = getPaths().generated.prebuild
+) => {
   const assets = findWebAssets()
   const rwjsPaths = getPaths()
+  const haveWebFolderInOutput = outputDir === getPaths().generated.prebuild
 
   assets.map((assetPath) => {
-    const relativePathFromSrc = path.relative(rwjsPaths.base, assetPath)
+    const relativePathFromSrc = path.relative(
+      haveWebFolderInOutput ? rwjsPaths.base : rwjsPaths.web.base,
+      assetPath
+    )
     const dstPath = path
-      .join(rwjsPaths.generated.prebuild, relativePathFromSrc)
+      .join(outputDir, relativePathFromSrc)
       .replace(/\.(ts)$/, '.js')
 
     fs.copyFileSync(assetPath, dstPath)
   })
+
+  fse.copySync(
+    path.join(rwjsPaths.web.base, 'public'),
+    path.join(outputDir, 'public')
+  )
+  fse.copyFileSync(
+    path.join(rwjsPaths.web.base, 'package.json'),
+    path.join(outputDir, 'package.json')
+  )
 }

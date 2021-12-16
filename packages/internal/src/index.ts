@@ -6,7 +6,11 @@ export * from './dev'
 export * from './files'
 export { generate } from './generate/generate'
 export { buildApi } from './build/api'
-export { prebuildWebFiles, cleanWebBuild } from './build/web'
+export {
+  prebuildWebFiles,
+  cleanWebBuild,
+  copyAssetsToPrebuild,
+} from './build/web'
 
 export * from './validateSchema'
 
