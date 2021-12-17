@@ -54,6 +54,9 @@ const createHistory = () => {
   }
 }
 
+if (!global) {
+  global = globalThis
+}
 const gHistory = createHistory()
 
 const { navigate, back } = gHistory
