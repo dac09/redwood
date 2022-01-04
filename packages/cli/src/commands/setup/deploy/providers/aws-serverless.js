@@ -1,11 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-import { getConfig } from '@redwoodjs/internal'
-
 import { getPaths } from '../../../../lib'
-
-const config = getConfig()
 
 const SERVERLESS_YML = `# See the full yml reference at https://www.serverless.com/framework/docs/providers/aws/guide/serverless.yml/
 service: app
@@ -24,19 +20,37 @@ custom:
 
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs14.x
   region: us-east-2 # This is the AWS region where the service will be deployed.
   httpApi: # HTTP API is used by default. To learn about the available options in API Gateway, see https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-vs-rest.html
-    cors: true
+    cors:
+      allowedOrigins:
+        - '*' # This is the default value. You can remove this line if you want to restrict the CORS to a specific origin.
+      # allowCredentials: true # allowCrednetials should only be used when allowedOrigins doesn't include '*'
+      allowedHeaders:
+        - authorization
+        - auth-provider
+        - content-Type
+        - X-Amz-Date
+        - X-Api-Key
+        - X-Amz-Security-Token
+        - X-Amz-User-Agent
     payload: '1.0'
+    useProviderTags: true # https://www.serverless.com/framework/docs/deprecations/#AWS_HTTP_API_USE_PROVIDER_TAGS
   stackTags: # Add CloudFormation stack tags here
     source: serverless
     name: Redwood Lambda API with HTTP API Gateway
   tags: # Add service wide tags here
     name: Redwood Lambda API with HTTP API Gateway
+  lambdaHashingVersion: 20201221 # https://www.serverless.com/framework/docs/deprecations/#LAMBDA_HASHING_VERSION_V2
 
 package:
   individually: true
+  patterns:
+    - '!node_modules/.prisma/client/libquery_engine-*'
+    - 'node_modules/.prisma/client/libquery_engine-rhel-*'
+    - '!node_modules/prisma/libquery_engine-*'
+    - '!node_modules/@prisma/engines/**'
 
 ${
   fs.existsSync(path.resolve(getPaths().api.functions))
@@ -52,17 +66,17 @@ ${
     memorySize: 1024 # mb
     timeout: 25 # seconds (max: 29)
     tags: # Tags for this specific lambda function
-      endpoint: ${config.web.apiUrl}/${basename}
+      endpoint: /${basename}
     # Uncomment this section to add environment variables either from the Serverless dotenv plugin or using Serverless params
     # environment:
     #   YOUR_FIRST_ENV_VARIABLE: \${env:YOUR_FIRST_ENV_VARIABLE}
     handler: ${basename}.handler
     events:
       - httpApi:
-          path: ${config.web.apiUrl}/${basename}
+          path: /${basename}
           method: GET
       - httpApi:
-          path: ${config.web.apiUrl}/${basename}
+          path: /${basename}
           method: POST
 `
     })
