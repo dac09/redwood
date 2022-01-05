@@ -13,8 +13,8 @@ export const preRequisites = () => [
 
 export const buildCommands = () => [
   {
-    title: 'Building API...',
-    command: ['yarn', ['rw', 'build', 'api']],
+    title: 'Building Web And API...',
+    command: ['yarn', ['rw', 'build']],
   },
   {
     title: 'Packing Functions...',
