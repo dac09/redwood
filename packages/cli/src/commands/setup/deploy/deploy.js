@@ -4,7 +4,9 @@ import path from 'path'
 import boxen from 'boxen'
 import execa from 'execa'
 import Listr from 'listr'
+import VerboseRenderer from 'listr-verbose-renderer'
 import terminalLink from 'terminal-link'
+import { option } from 'yargs'
 
 import { getPaths, writeFilesTask } from '../../../lib'
 import c from '../../../lib/colors'
@@ -48,6 +50,12 @@ export const builder = (yargs) => {
       description: 'Overwrite existing configuration',
       type: 'boolean',
     })
+    .option('verbose', {
+      alias: 'v',
+      default: false,
+      description: 'Print more',
+      type: 'boolean',
+    })
     .option('database', {
       alias: 'd',
       choices: ['none', 'postgresql', 'sqlite'],
@@ -71,7 +79,13 @@ export const builder = (yargs) => {
     )
 }
 
-export const handler = async ({ provider, force, database, rwVersion }) => {
+export const handler = async ({
+  provider,
+  force,
+  database,
+  rwVersion,
+  verbose,
+}) => {
   const providerData = await import(`./providers/${provider}`)
   const apiDependencies = JSON.parse(
     fs.readFileSync('api/package.json').toString()
@@ -209,7 +223,7 @@ export const handler = async ({ provider, force, database, rwVersion }) => {
         },
       },
     ].filter(Boolean),
-    { collapse: false }
+    { collapse: false, renderer: verbose && VerboseRenderer }
   )
 
   try {
