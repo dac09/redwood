@@ -6,9 +6,15 @@ export const builder = (yargs) =>
   yargs
     .commandDir('./newProviders', { recurse: true })
     .demandCommand()
+    .option('force', {
+      alias: 'f',
+      default: false,
+      description: 'Overwrite existing configuration',
+      type: 'boolean',
+    })
     .epilogue(
       `Also see the ${terminalLink(
         'Redwood CLI Reference',
-        'https://redwoodjs.com/docs/cli-commands#deploy'
-      )}\n`
+        'https://redwoodjs.com/reference/command-line-interface#generate-deploy'
+      )}`
     )
