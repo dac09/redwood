@@ -1,10 +1,8 @@
-import path from 'path'
-
-import { getPaths, getConfig } from '../../../../lib'
+import { getConfig } from '../../../../lib'
 
 const config = getConfig()
 
-const NETLIFY_TOML = `[build]
+export const NETLIFY_TOML = `[build]
 command = "yarn rw deploy netlify"
 publish = "web/dist"
 functions = "api/dist/functions"
@@ -26,16 +24,3 @@ functions = "api/dist/functions"
   to = "/index.html"
   status = 200
 `
-
-// any files to create
-export const files = [
-  { path: path.join(getPaths().base, 'netlify.toml'), content: NETLIFY_TOML },
-]
-
-export const apiUrl = '/.netlify/functions'
-
-// any notes to print out when the job is done
-export const notes = [
-  'You are ready to deploy to Netlify!',
-  'See: https://redwoodjs.com/docs/deploy#netlify-deploy',
-]
