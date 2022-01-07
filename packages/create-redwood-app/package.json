@@ -15,7 +15,7 @@
     "chalk": "4.1.2",
     "check-node-version": "4.2.1",
     "decompress": "4.2.1",
-    "execa": "5.1.1",
+    "execa": "6.0.0",
     "fs-extra": "10.0.0",
     "listr": "0.14.3",
     "tmp": "0.2.1",
