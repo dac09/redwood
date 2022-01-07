@@ -41,7 +41,7 @@
     "octokit": "1.7.1",
     "ora": "5.4.1",
     "rimraf": "3.0.2",
-    "terminal-link": "2.1.1",
+    "terminal-link": "3.0.0",
     "typescript": "4.5.4",
     "typescript-transform-paths": "3.3.1"
   },
