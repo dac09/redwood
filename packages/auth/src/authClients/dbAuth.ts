@@ -27,7 +27,7 @@ export const dbAuth = (
   const { credentials } = config.fetchConfig
 
   const forgotPassword = async (username: string) => {
-    const response = await fetch(global.RWJS_API_DBAUTH_URL, {
+    const response = await fetch(globalThis.RWJS_API_DBAUTH_URL, {
       credentials,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -38,7 +38,7 @@ export const dbAuth = (
 
   const getToken = async () => {
     const response = await fetch(
-      `${global.RWJS_API_DBAUTH_URL}?method=getToken`,
+      `${globalThis.RWJS_API_DBAUTH_URL}?method=getToken`,
       { credentials }
     )
     const token = await response.text()
@@ -52,7 +52,7 @@ export const dbAuth = (
 
   const login = async (attributes: LoginAttributes) => {
     const { username, password } = attributes
-    const response = await fetch(global.RWJS_API_DBAUTH_URL, {
+    const response = await fetch(globalThis.RWJS_API_DBAUTH_URL, {
       credentials,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -62,7 +62,7 @@ export const dbAuth = (
   }
 
   const logout = async () => {
-    await fetch(global.RWJS_API_DBAUTH_URL, {
+    await fetch(globalThis.RWJS_API_DBAUTH_URL, {
       credentials,
       method: 'POST',
       body: JSON.stringify({ method: 'logout' }),
@@ -71,7 +71,7 @@ export const dbAuth = (
   }
 
   const resetPassword = async (attributes: ResetPasswordAttributes) => {
-    const response = await fetch(global.RWJS_API_DBAUTH_URL, {
+    const response = await fetch(globalThis.RWJS_API_DBAUTH_URL, {
       credentials,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -81,7 +81,7 @@ export const dbAuth = (
   }
 
   const signup = async (attributes: SignupAttributes) => {
-    const response = await fetch(global.RWJS_API_DBAUTH_URL, {
+    const response = await fetch(globalThis.RWJS_API_DBAUTH_URL, {
       credentials,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -91,7 +91,7 @@ export const dbAuth = (
   }
 
   const validateResetToken = async (resetToken: string | null) => {
-    const response = await fetch(global.RWJS_API_DBAUTH_URL, {
+    const response = await fetch(globalThis.RWJS_API_DBAUTH_URL, {
       credentials,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

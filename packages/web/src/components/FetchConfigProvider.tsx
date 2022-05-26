@@ -1,7 +1,7 @@
 import type { AuthContextInterface, SupportedAuthTypes } from '@redwoodjs/auth'
 
 export const getApiGraphQLUrl = () => {
-  return global.RWJS_API_GRAPHQL_URL
+  return globalThis.RWJS_API_GRAPHQL_URL
 }
 
 export interface FetchConfig {
@@ -25,7 +25,7 @@ type UseAuthType = () => AuthContextInterface
 export const FetchConfigProvider: React.FunctionComponent<{
   useAuth?: UseAuthType
 }> = ({
-  useAuth = global.__REDWOOD__USE_AUTH ?? (() => defaultAuthState),
+  useAuth = globalThis.__REDWOOD__USE_AUTH ?? (() => defaultAuthState),
   ...rest
 }) => {
   const { isAuthenticated, type } = useAuth()

@@ -561,7 +561,7 @@ const useVersion = () => {
   useEffect(() => {
     async function fetchVersion() {
       try {
-        const response = await global.fetch(global.RWJS_API_GRAPHQL_URL, {
+        const response = await globalThis.fetch(global.RWJS_API_GRAPHQL_URL, {
           method: 'POST',
           headers: {
             'content-type': 'application/json',
@@ -578,7 +578,7 @@ const useVersion = () => {
       }
     }
 
-    if (!global.fetch) {
+    if (!globalThis.fetch) {
       return
     }
 

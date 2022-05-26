@@ -7,4 +7,4 @@ export const useAuth = (): AuthContextInterface => {
   return React.useContext(AuthContext) as AuthContextInterface
 }
 
-global.__REDWOOD__USE_AUTH = useAuth
+globalThis.__REDWOOD__USE_AUTH = useAuth

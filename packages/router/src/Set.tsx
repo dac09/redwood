@@ -68,7 +68,8 @@ export function Set<WrapperProps>(props: SetProps<WrapperProps>) {
       return whileLoadingAuth?.() || null
     } else {
       const currentLocation =
-        global.location.pathname + encodeURIComponent(global.location.search)
+        globalThis.location.pathname +
+        encodeURIComponent(globalThis.location.search)
 
       // We already have a check for !unauthenticated further up
       const unauthenticatedPath = namedRoutes[unauthenticated || '']()

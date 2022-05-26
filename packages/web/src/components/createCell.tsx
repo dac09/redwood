@@ -229,7 +229,7 @@ export function createCell<CellProps = any>({
   /**
    * If we're prerendering, render the Cell's Loading component and exit early.
    */
-  if (global.__REDWOOD__PRERENDERING) {
+  if (globalThis.__REDWOOD__PRERENDERING) {
     /**
      * Apollo Client's props aren't available here, so 'any'.
      */

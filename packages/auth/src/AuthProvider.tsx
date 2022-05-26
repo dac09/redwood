@@ -146,13 +146,13 @@ export class AuthProvider extends React.Component<
   }
 
   getApiGraphQLUrl = () => {
-    return global.RWJS_API_GRAPHQL_URL
+    return globalThis.RWJS_API_GRAPHQL_URL
   }
 
   getCurrentUser = async (): Promise<Record<string, unknown>> => {
     // Always get a fresh token, rather than use the one in state
     const token = await this.getToken()
-    const response = await global.fetch(this.getApiGraphQLUrl(), {
+    const response = await globalThis.fetch(this.getApiGraphQLUrl(), {
       method: 'POST',
       // TODO: how can user configure this? inherit same `config` options given to auth client?
       credentials: 'include',
