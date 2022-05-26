@@ -6,12 +6,7 @@ import type { TransformOptions } from '@babel/core'
 
 import { getPaths } from '../../paths'
 
-import {
-  CORE_JS_VERSION,
-  getCommonPlugins,
-  registerBabel,
-  RegisterHookOptions,
-} from './common'
+import { registerBabel, RegisterHookOptions } from './common'
 
 export const getWebSideBabelPlugins = (
   { forJest }: Flags = { forJest: false }
@@ -19,7 +14,7 @@ export const getWebSideBabelPlugins = (
   const rwjsPaths = getPaths()
 
   const plugins: TransformOptions['plugins'] = [
-    ...getCommonPlugins(),
+    // ...getCommonPlugins(),
     // === Import path handling
     [
       'babel-plugin-module-resolver',
@@ -35,13 +30,6 @@ export const getWebSideBabelPlugins = (
         loglevel: 'silent', // to silence the unnecessary warnings
       },
       'rwjs-module-resolver',
-    ],
-    [
-      require('../babelPlugins/babel-plugin-redwood-src-alias').default,
-      {
-        srcAbsPath: rwjsPaths.web.src,
-      },
-      'rwjs-babel-src-alias',
     ],
     [
       require('../babelPlugins/babel-plugin-redwood-directory-named-import')
@@ -161,24 +149,24 @@ export const getWebSideBabelPresets = () => {
   return [
     ['@babel/preset-react', reactPresetConfig],
     ['@babel/preset-typescript', undefined, 'rwjs-babel-preset-typescript'],
-    [
-      '@babel/preset-env',
-      {
-        // the targets are set in <userProject>/web/package.json
-        useBuiltIns: 'usage',
-        corejs: {
-          version: CORE_JS_VERSION,
-          proposals: true,
-        },
-        exclude: [
-          // Remove class-properties from preset-env, and include separately
-          // https://github.com/webpack/webpack/issues/9708
-          '@babel/plugin-proposal-class-properties',
-          '@babel/plugin-proposal-private-methods',
-        ],
-      },
-      'rwjs-babel-preset-env',
-    ],
+    // [
+    //   '@babel/preset-env',
+    //   {
+    //     // the targets are set in <userProject>/web/package.json
+    //     useBuiltIns: 'usage',
+    //     corejs: {
+    //       version: CORE_JS_VERSION,
+    //       proposals: true,
+    //     },
+    //     exclude: [
+    //       // Remove class-properties from preset-env, and include separately
+    //       // https://github.com/webpack/webpack/issues/9708
+    //       '@babel/plugin-proposal-class-properties',
+    //       '@babel/plugin-proposal-private-methods',
+    //     ],
+    //   },
+    //   'rwjs-babel-preset-env',
+    // ],
   ]
 }
 
@@ -203,7 +191,7 @@ export const getWebSideDefaultBabelConfig = (options: Flags = {}) => {
   // and merge them because we have specified the filename property, unless babelrc = false
 
   return {
-    presets: getWebSideBabelPresets(),
+    // presets: getWebSideBabelPresets(),
     plugins: getWebSideBabelPlugins(options),
     overrides: getWebSideOverrides(options),
     extends: getWebSideBabelConfigPath(),
