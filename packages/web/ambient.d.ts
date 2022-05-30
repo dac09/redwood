@@ -18,6 +18,8 @@ declare global {
   /** Path to Redwood app source used by Development Error page to resolve source code paths */
   var RWJS_SRC_ROOT: string
 
+  var RWJS_GLOBALS: Record<string, stirng>
+
   namespace NodeJS {
     interface Global {
       /**
