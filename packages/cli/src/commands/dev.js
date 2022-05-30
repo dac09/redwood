@@ -23,6 +23,7 @@ export const builder = (yargs) => {
       description: 'Which dev server(s) to start',
       type: 'array',
     })
+    // @MARK figure out what this was for
     .option('forward', {
       alias: 'fwd',
       description:
@@ -54,9 +55,7 @@ export const builder = (yargs) => {
 
 export const handler = async ({
   side = ['api', 'web'],
-  forward = '',
   generate = true,
-  watchNodeModules = process.env.RWJS_WATCH_NODE_MODULES === '1',
   apiDebugPort,
 }) => {
   const rwjsPaths = getPaths()
@@ -97,10 +96,6 @@ export const handler = async ({
     }
   }
 
-  const webpackDevConfig = require.resolve(
-    '@redwoodjs/core/config/webpack.development.js'
-  )
-
   const getApiDebugFlag = () => {
     // Passed in flag takes precedence
     if (apiDebugPort) {
@@ -130,11 +125,7 @@ export const handler = async ({
     },
     web: {
       name: 'web',
-      command: `cd "${
-        rwjsPaths.web.base
-      }" && yarn cross-env NODE_ENV=development RWJS_WATCH_NODE_MODULES=${
-        watchNodeModules ? '1' : ''
-      } webpack serve --config "${webpackDevConfig}" ${forward}`,
+      command: `yarn vite dev`,
       prefixColor: 'blue',
       runWhen: () => fs.existsSync(rwjsPaths.web.src),
     },
