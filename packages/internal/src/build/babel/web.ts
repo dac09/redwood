@@ -14,8 +14,11 @@ export const getWebSideBabelPlugins = (
   const rwjsPaths = getPaths()
 
   const plugins: TransformOptions['plugins'] = [
+    // @MARK no need
     // ...getCommonPlugins(),
     // === Import path handling
+    // @MARK: we should remove this, but currently can't because of hte routes autoloader
+    // Because it checks the imports for absolute paths. But we now do the transform in vite instead
     [
       'babel-plugin-module-resolver',
       {
