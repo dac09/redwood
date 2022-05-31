@@ -108,7 +108,9 @@ export const getWebSideOverrides = (
           require('../babelPlugins/babel-plugin-redwood-routes-auto-loader')
             .default,
           {
-            useStaticImports: staticImports,
+            useStaticImports:
+              process.env.RWJS_ROUTES_USE_STATIC_IMPORTS === '1' ||
+              staticImports,
           },
         ],
       ],

@@ -7,9 +7,15 @@ export interface LocationContextType {
   pathname: string
   search?: string
   hash?: string
+  mode?: RouterMode
 }
 
 const LocationContext = createNamedContext<LocationContextType>('Location')
+
+export enum RouterMode {
+  STATIC = 'STATIC',
+  BROWSER = 'BROWSER',
+}
 
 interface LocationProviderProps {
   location?: {
@@ -18,6 +24,7 @@ interface LocationProviderProps {
     hash?: string
   }
   trailingSlashes?: TrailingSlashesTypes
+  mode?: RouterMode
 }
 
 class LocationProvider extends React.Component<LocationProviderProps> {
@@ -75,7 +82,12 @@ class LocationProvider extends React.Component<LocationProviderProps> {
 
     const { pathname, search, hash } = this.props.location || windowLocation
 
-    return { pathname, search, hash }
+    return {
+      pathname,
+      search,
+      hash,
+      mode: this.props.mode || RouterMode.BROWSER,
+    }
   }
 
   componentDidMount() {

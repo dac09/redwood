@@ -6,6 +6,7 @@ import {
   ActivePageContextProvider,
   LoadingStateRecord,
 } from './ActivePageContext'
+import { RouterMode } from './location'
 import { PageLoadingContextProvider } from './PageLoadingContext'
 import { useIsMounted } from './useIsMounted'
 import { Spec, getAnnouncement, getFocus, resetFocus } from './util'
@@ -13,8 +14,6 @@ import { Spec, getAnnouncement, getFocus, resetFocus } from './util'
 import { ParamsProvider, useLocation } from '.'
 
 const DEFAULT_PAGE_LOADING_DELAY = 1000 // milliseconds
-
-type synchronousLoaderSpec = () => { default: React.ComponentType<unknown> }
 
 interface Props {
   path: string
@@ -53,6 +52,22 @@ export const ActiveRouteLoader = ({
   const clearLoadingTimeout = () => {
     if (loadingTimeout.current) {
       clearTimeout(loadingTimeout.current)
+    }
+  }
+
+  type SynchronousLoaderSpec = () =>
+    | { default: React.ComponentType<unknown> } // babel loads it this way |
+    | React.ComponentType<unknown> // vite
+
+  function getPageFromSyncLoader(loader: SynchronousLoaderSpec) {
+    const output = loader()
+
+    if (typeof output === 'function') {
+      // Vite returns the Page directly
+      return output
+    } else {
+      // babel loads it as an object with default export
+      return output.default
     }
   }
 
@@ -179,17 +194,17 @@ export const ActiveRouteLoader = ({
   // It might feel tempting to move this code further up in the file for an
   // "early return", but React doesn't allow that because pretty much all code
   // above is hooks, and they always need to come before any `return`
-  if (globalThis.__REDWOOD__PRERENDERING) {
+  if (location.mode === RouterMode.STATIC) {
     // babel auto-loader plugin uses withStaticImport in prerender mode
     // override the types for this condition
-    const syncPageLoader = spec.loader as unknown as synchronousLoaderSpec
-    const PageFromLoader = syncPageLoader().default
+    const syncPageLoader = spec.loader as unknown as SynchronousLoaderSpec
+    // vite loads it this way
 
     const prerenderLoadingState: LoadingStateRecord = {
       [path]: {
         state: 'DONE',
         specName: spec.name,
-        page: PageFromLoader,
+        page: getPageFromSyncLoader(syncPageLoader),
         location,
       },
     }
