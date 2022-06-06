@@ -80,18 +80,19 @@ class LocationProvider extends React.Component<LocationProviderProps> {
       }
     }
 
-    const { pathname, search, hash } = this.props.location || windowLocation
+    // const { pathname, search, hash } = this.props.location || windowLocation
 
     return {
-      pathname,
-      search,
-      hash,
-      mode: this.props.mode || RouterMode.BROWSER,
+      pathname: this.props.location?.pathname || windowLocation.pathname,
+      search: this.props.location?.search || windowLocation.search,
+      hash: this.props.location?.hash || windowLocation.hash,
+      mode: this.props.mode,
     }
   }
 
   componentDidMount() {
     this.HISTORY_LISTENER_ID = gHistory.listen(() => {
+      console.log('gHistory triggered!! Old state', this.state)
       this.setState(() => ({ context: this.getContext() }))
     })
   }
@@ -103,6 +104,7 @@ class LocationProvider extends React.Component<LocationProviderProps> {
   }
 
   render() {
+    console.log('rereder new state', this.state)
     return (
       <LocationContext.Provider value={this.state.context}>
         {this.props.children}

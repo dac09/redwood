@@ -153,6 +153,12 @@ const LocationAwareRouter: React.FC<RouterProps> = ({
   pageLoadingDelay,
   children,
 }) => {
+  console.log('LocationAwareRouter', {
+    useAuth,
+    paramTypes,
+    pageLoadingDelay,
+    children,
+  })
   const location = useLocation()
   const flatChildArray = flattenAll(children)
 

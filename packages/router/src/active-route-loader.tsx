@@ -87,6 +87,7 @@ export const ActiveRouteLoader = ({
   }, [pageName, params])
 
   useEffect(() => {
+    console.log('Second useEffect')
     const startPageLoadTransition = async (
       { loader, name }: Spec,
       delay: number = DEFAULT_PAGE_LOADING_DELAY
@@ -124,6 +125,10 @@ export const ActiveRouteLoader = ({
       // Wait to download and parse the page.
       waitingFor.current = name
       const module = await loader()
+      console.log(
+        `🗯 \n ~ file: active-route-loader.tsx ~ line 127 ~ module`,
+        module
+      )
 
       // Remove the timeout because the page has loaded.
       clearLoadingTimeout()
@@ -195,6 +200,7 @@ export const ActiveRouteLoader = ({
   // "early return", but React doesn't allow that because pretty much all code
   // above is hooks, and they always need to come before any `return`
   if (location.mode === RouterMode.STATIC) {
+    console.log('in the static mode block')
     // babel auto-loader plugin uses withStaticImport in prerender mode
     // override the types for this condition
     const syncPageLoader = spec.loader as unknown as SynchronousLoaderSpec
@@ -221,6 +227,8 @@ export const ActiveRouteLoader = ({
       </ParamsProvider>
     )
   }
+
+  console.log('rerendering')
 
   return (
     <ParamsProvider
