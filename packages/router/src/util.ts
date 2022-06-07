@@ -365,13 +365,16 @@ export const resetFocus = () => {
 
 export interface Spec {
   name: string
-  loader: () => Promise<{ default: React.ComponentType<unknown> }>
+  chunkLoader: () => Promise<{ default: React.ComponentType<unknown> }>
+  syncLoader?: () =>
+    | { default: React.ComponentType<unknown> }
+    | React.ComponentType<unknown>
 }
 
 export function isSpec(
   specOrPage: Spec | React.ComponentType
 ): specOrPage is Spec {
-  return (specOrPage as Spec).loader !== undefined
+  return (specOrPage as Spec).chunkLoader !== undefined
 }
 
 /**
@@ -402,6 +405,6 @@ export function normalizePage(
   // an async module import.
   return {
     name: specOrPage.name,
-    loader: async () => ({ default: specOrPage }),
+    chunkLoader: async () => ({ default: specOrPage }),
   }
 }

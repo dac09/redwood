@@ -112,6 +112,7 @@ const InternalRoute = ({
   }
 
   const Page = activePageContext.loadingState[path]?.page || (() => null)
+  console.log(`🗯 \n ~ file: router.tsx ~ line 115 ~ Page`, Page)
 
   // Level 3/3 (InternalRoute)
   return <Page {...allParams} />
@@ -126,6 +127,7 @@ function isRoute(
 interface RouterProps extends RouterContextProviderProps {
   trailingSlashes?: TrailingSlashesTypes
   pageLoadingDelay?: number
+  mode?: 'static' | 'browser'
 }
 
 const Router: React.FC<RouterProps> = ({
@@ -134,18 +136,31 @@ const Router: React.FC<RouterProps> = ({
   pageLoadingDelay,
   trailingSlashes = 'never',
   children,
-}) => (
+}) => {
+  // if (mode === 'static') {
+  //   return (
+  //     <LocationAwareRouter
+  //       useAuth={useAuth}
+  //       paramTypes={paramTypes}
+  //       pageLoadingDelay={pageLoadingDelay}
+  //     >
+  //       {children}
+  //     </LocationAwareRouter>
+  //   )
+  // }
   // Level 1/3 (outer-most)
-  <LocationProvider trailingSlashes={trailingSlashes}>
-    <LocationAwareRouter
-      useAuth={useAuth}
-      paramTypes={paramTypes}
-      pageLoadingDelay={pageLoadingDelay}
-    >
-      {children}
-    </LocationAwareRouter>
-  </LocationProvider>
-)
+  return (
+    <LocationProvider trailingSlashes={trailingSlashes}>
+      <LocationAwareRouter
+        useAuth={useAuth}
+        paramTypes={paramTypes}
+        pageLoadingDelay={pageLoadingDelay}
+      >
+        {children}
+      </LocationAwareRouter>
+    </LocationProvider>
+  )
+}
 
 const LocationAwareRouter: React.FC<RouterProps> = ({
   useAuth,

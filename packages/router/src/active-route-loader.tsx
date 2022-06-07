@@ -6,7 +6,6 @@ import {
   ActivePageContextProvider,
   LoadingStateRecord,
 } from './ActivePageContext'
-import { RouterMode } from './location'
 import { PageLoadingContextProvider } from './PageLoadingContext'
 import { useIsMounted } from './useIsMounted'
 import { Spec, getAnnouncement, getFocus, resetFocus } from './util'
@@ -36,6 +35,10 @@ export const ActiveRouteLoader = ({
   children,
 }: Props) => {
   const location = useLocation()
+  console.log(
+    `🗯 \n ~ file: active-route-loader.tsx ~ line 38 ~ location`,
+    location
+  )
   const [pageName, setPageName] = useState('')
   const loadingTimeout = useRef<NodeJS.Timeout>()
   const announcementRef = useRef<HTMLDivElement>(null)
@@ -89,7 +92,7 @@ export const ActiveRouteLoader = ({
   useEffect(() => {
     console.log('Second useEffect')
     const startPageLoadTransition = async (
-      { loader, name }: Spec,
+      { chunkLoader, name }: Spec,
       delay: number = DEFAULT_PAGE_LOADING_DELAY
     ) => {
       setLoadingState((loadingState) => ({
@@ -124,11 +127,7 @@ export const ActiveRouteLoader = ({
 
       // Wait to download and parse the page.
       waitingFor.current = name
-      const module = await loader()
-      console.log(
-        `🗯 \n ~ file: active-route-loader.tsx ~ line 127 ~ module`,
-        module
-      )
+      const module = await chunkLoader()
 
       // Remove the timeout because the page has loaded.
       clearLoadingTimeout()
@@ -199,11 +198,11 @@ export const ActiveRouteLoader = ({
   // It might feel tempting to move this code further up in the file for an
   // "early return", but React doesn't allow that because pretty much all code
   // above is hooks, and they always need to come before any `return`
-  if (location.mode === RouterMode.STATIC) {
-    console.log('in the static mode block')
+  if (location.mode === 'static') {
+    console.log('xxxxxx', spec)
     // babel auto-loader plugin uses withStaticImport in prerender mode
     // override the types for this condition
-    const syncPageLoader = spec.loader as unknown as SynchronousLoaderSpec
+    const syncPageLoader = spec.syncLoader as unknown as SynchronousLoaderSpec
     // vite loads it this way
 
     const prerenderLoadingState: LoadingStateRecord = {
