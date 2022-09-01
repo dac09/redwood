@@ -15,12 +15,12 @@ const ForgotPasswordPage = () => {
     }
   }, [isAuthenticated])
 
-  const usernameRef = useRef<HTMLInputElement>(null)
+  const usernameRef = useRef<HTMLInputElement>()
   useEffect(() => {
-    usernameRef?.current?.focus()
+    usernameRef.current.focus()
   }, [])
 
-  const onSubmit = async (data: { username: string }) => {
+  const onSubmit = async (data) => {
     const response = await forgotPassword(data.username)
 
     if (response.error) {

@@ -12,7 +12,7 @@ import { navigate, routes } from '@redwoodjs/router'
 import { MetaTags } from '@redwoodjs/web'
 import { toast, Toaster } from '@redwoodjs/web/toast'
 
-const ResetPasswordPage = ({ resetToken }: { resetToken: string }) => {
+const ResetPasswordPage = ({ resetToken }) => {
   const { isAuthenticated, reauthenticate, validateResetToken, resetPassword } =
     useAuth()
   const [enabled, setEnabled] = useState(true)
