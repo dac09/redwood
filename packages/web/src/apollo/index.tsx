@@ -4,9 +4,9 @@ import type {
   ApolloCache,
 } from '@apollo/client'
 import * as apolloClient from '@apollo/client'
-import { setContext } from '@apollo/client/link/context'
+import { setContext } from '@apollo/client/link/context/index.js'
 import { fetch as crossFetch } from '@whatwg-node/fetch'
-import { print } from 'graphql/language/printer'
+import { print } from 'graphql-esm/language/printer'
 
 // Note: Importing directly from `apollo/client` does not work properly in Storybook.
 const {

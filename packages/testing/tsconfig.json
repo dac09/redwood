@@ -5,6 +5,7 @@
     "rootDir": "src",
     "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
     "outDir": "dist",
+    "moduleResolution": "node16", // because of dual FE packages
     "paths": {
       "src/*": ["./src/*"],
     },
