@@ -54,7 +54,8 @@ interface BuildOptions {
  * Note that the webpack versoin is triggered via the webpack CLI
  *
  */
-export const buildWeb = async ({ verbose }: BuildOptions) => {
+// @TODO add proper output type
+export const buildWeb = async ({ verbose }: BuildOptions): Promise<any> => {
   // @NOTE: Using dynamic import, because vite is still opt-in
   const { build } = await import('vite')
   const viteConfig = getPaths().web.viteConfig

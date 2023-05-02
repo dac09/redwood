@@ -14,7 +14,9 @@
   },
   "namedInputs": {
     "default": [
-      "{projectRoot}/**/*"
+      "{projectRoot}/**/*",
+      "{projectRoot}/tsconfig.json",
+      "{projectRoot}/tsup.config.ts"
     ],
     "prod": [
       "!{projectRoot}/**/*.test.{js,jsx,ts,tsx}",

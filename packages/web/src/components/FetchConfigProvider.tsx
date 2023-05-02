@@ -1,6 +1,10 @@
 import React from 'react'
 
-import { UseAuth, useNoAuth } from '@redwoodjs/auth'
+import type { UseAuth } from '@redwoodjs/auth'
+// Because rwjs/auth isn't ESM yet
+import rwAuth from '@redwoodjs/auth'
+console.log(`👉 \n ~ file: FetchConfigProvider.tsx:6 ~ rwAuth:`, rwAuth)
+const { useNoAuth } = rwAuth
 
 export const getApiGraphQLUrl = () => {
   return globalThis.RWJS_API_GRAPHQL_URL

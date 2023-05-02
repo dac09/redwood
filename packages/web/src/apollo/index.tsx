@@ -1,13 +1,15 @@
+import React from 'react'
+
 import type {
   ApolloClientOptions,
   setLogVerbosity,
   ApolloCache,
 } from '@apollo/client'
-import * as apolloClient from '@apollo/client'
+import apolloClient from '@apollo/client'
 import { setContext } from '@apollo/client/link/context/index.js'
-import { fetch as crossFetch } from '@whatwg-node/fetch'
 import { print } from 'graphql-esm/language/printer'
 
+console.log(`👉 \n ~ file: index.tsx:9 ~ apolloClient:`, apolloClient)
 // Note: Importing directly from `apollo/client` does not work properly in Storybook.
 const {
   ApolloProvider,
@@ -20,7 +22,9 @@ const {
   setLogVerbosity: apolloSetLogVerbosity,
 } = apolloClient
 
-import { UseAuth, useNoAuth } from '@redwoodjs/auth'
+import type { UseAuth } from '@redwoodjs/auth'
+import RwAuth from '@redwoodjs/auth'
+const { useNoAuth } = RwAuth
 import './typeOverride'
 
 import {
@@ -130,7 +134,7 @@ const ApolloProviderWithFetchConfig: React.FunctionComponent<{
     data.mostRecentRequest.variables = variables
     data.mostRecentRequest.query = query && print(operation.query)
 
-    return forward(operation).map((result) => {
+    return forward(operation).map((result: any) => {
       data.mostRecentResponse = result
 
       return result
@@ -175,7 +179,7 @@ const ApolloProviderWithFetchConfig: React.FunctionComponent<{
    */
   const { httpLinkConfig, link: userLink, ...rest } = config ?? {}
 
-  const httpLink = new HttpLink({ uri, fetch: crossFetch, ...httpLinkConfig })
+  const httpLink = new HttpLink({ uri, ...httpLinkConfig })
 
   /**
    * The order here is important. The last link *must* be a terminating link like HttpLink.

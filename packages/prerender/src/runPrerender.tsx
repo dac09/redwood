@@ -10,7 +10,7 @@ import { registerApiSideBabelHook } from '@redwoodjs/internal/dist/build/babel/a
 import { registerWebSideBabelHook } from '@redwoodjs/internal/dist/build/babel/web'
 import { getPaths } from '@redwoodjs/project-config'
 import { LocationProvider } from '@redwoodjs/router'
-import { matchPath } from '@redwoodjs/router/dist/util'
+import { matchPath } from '@redwoodjs/router/util'
 import type { QueryInfo } from '@redwoodjs/web'
 
 import mediaImportsPlugin from './babelPlugins/babel-plugin-redwood-prerender-media-imports'

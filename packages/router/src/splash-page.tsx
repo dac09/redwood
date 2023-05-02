@@ -1,3 +1,4 @@
+// @ts-expect-error bazinga
 import React, { useState, useEffect } from 'react'
 
 type PathDefinition = string

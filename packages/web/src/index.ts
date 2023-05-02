@@ -1,6 +1,6 @@
-import './global.web-auto-imports'
+import './global.web-auto-imports.d.ts'
 import './config'
-import './assetImports'
+import './assetImports.d.ts'
 
 export { default as FatalErrorBoundary } from './components/FatalErrorBoundary'
 export {

@@ -1,3 +1,5 @@
+import React from 'react'
+
 import { OperationVariables } from '@apollo/client'
 import type { DocumentNode } from 'graphql'
 

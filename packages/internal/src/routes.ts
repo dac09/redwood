@@ -3,7 +3,7 @@ import path from 'path'
 import chalk from 'chalk'
 
 import { getPaths, getRouteHookForPage } from '@redwoodjs/project-config'
-import { getRouteRegexAndParams } from '@redwoodjs/router'
+import { getRouteRegexAndParams } from '@redwoodjs/router/util'
 
 // Circular dependency when trying to use the standard import
 const { getProject } = require('@redwoodjs/structure/dist/index')
