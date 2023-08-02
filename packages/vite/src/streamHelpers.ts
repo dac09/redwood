@@ -72,9 +72,12 @@ export function reactRenderToStream({
         ? `window.__assetMap = function() { return ${assetMap} }`
         : undefined,
       bootstrapModules,
-      onShellReady() {
-        // Pass the react "input" stream to the injection stream
-        // This intermediate stream will interweave the injected html into the react stream's <head>
+      // onShellReady() {
+      //   // Pass the react "input" stream to the injection stream
+      //   // This intermediate stream will interweave the injected html into the react stream's <head>
+      //   pipe(intermediateStream)
+      // },
+      onAllReady() {
         pipe(intermediateStream)
       },
     }
@@ -90,6 +93,10 @@ function createServerInjectionStream({
   return new Writable({
     write(chunk, encoding, next) {
       const chunkAsString = chunk.toString()
+      console.log(
+        `👉 \n ~ file: streamHelpers.ts:96 ~ chunkAsString:`,
+        chunkAsString
+      )
       const split = chunkAsString.split('</head>')
 
       // If the closing tag exists

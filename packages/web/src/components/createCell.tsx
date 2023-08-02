@@ -1,4 +1,4 @@
-import { ComponentProps, JSXElementConstructor } from 'react'
+import { ComponentProps, JSXElementConstructor, Suspense } from 'react'
 
 import { OperationVariables } from '@apollo/client'
 import type { DocumentNode } from 'graphql'
@@ -395,5 +395,9 @@ export function createCell<
 
   NamedCell.displayName = displayName
 
-  return (props: CellProps) => <NamedCell {...props} />
+  return (props: CellProps) => (
+    <Suspense fallback="hardcoded loading">
+      <NamedCell {...props} />
+    </Suspense>
+  )
 }

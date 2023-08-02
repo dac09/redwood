@@ -5,17 +5,23 @@ import type {
 } from '@apollo/client'
 import * as apolloClient from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
+import {
+  ApolloNextAppProvider,
+  NextSSRApolloClient,
+  NextSSRInMemoryCache,
+  useSuspenseQuery,
+  // @ts-expect-error Intentionally not installing this dependency.
+} from '@apollo/experimental-nextjs-app-support/ssr'
 import { fetch as crossFetch } from '@whatwg-node/fetch'
 import { print } from 'graphql/language/printer'
 
 // Note: Importing directly from `apollo/client` doesn't work properly in Storybook.
 const {
-  ApolloProvider,
   ApolloClient,
   ApolloLink,
   HttpLink,
   InMemoryCache,
-  useQuery,
+  // useQuery,
   useMutation,
   useSubscription,
   setLogVerbosity: apolloSetLogVerbosity,
@@ -204,6 +210,8 @@ const ApolloProviderWithFetchConfig: React.FunctionComponent<{
     link = link(redwoodApolloLinks)
   }
 
+  // @ts-expect-error ffff
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const client = new ApolloClient({
     // Default options for every Cell. Better to specify them here than in `beforeQuery` where it's too easy to overwrite them.
     // See https://www.apollographql.com/docs/react/api/core/ApolloClient/#example-defaultoptions-object.
@@ -231,10 +239,38 @@ const ApolloProviderWithFetchConfig: React.FunctionComponent<{
     throw error
   }
 
+  function makeClient() {
+    const httpLink = new HttpLink({
+      // this needs to be an absolute url, as relative urls cannot be used in SSR
+      uri:
+        typeof window === 'undefined' ? 'http://localhost:8911/graphql' : uri,
+      // you can disable result caching here if you want to
+      // (this does not work if you are rendering your page with `export const dynamic = "force-static"`)
+      fetchOptions: { cache: 'no-store' },
+    })
+
+    return new NextSSRApolloClient({
+      // use the `NextSSRInMemoryCache`, not the normal `InMemoryCache`
+      cache: new NextSSRInMemoryCache(),
+      link:
+        typeof window === 'undefined'
+          ? ApolloLink.from([
+              // // in a SSR environment, if you use multipart features like
+              // // @defer, you need to decide how to handle these.
+              // // This strips all interfaces with a `@defer` directive from your queries.
+              // new SSRMultipartLink({
+              //   stripDefer: true,
+              // }),
+              httpLink,
+            ])
+          : httpLink,
+    })
+  }
+
   return (
-    <ApolloProvider client={client}>
+    <ApolloNextAppProvider makeClient={makeClient}>
       <ErrorBoundary onError={extendErrorAndRethrow}>{children}</ErrorBoundary>
-    </ApolloProvider>
+    </ApolloNextAppProvider>
   )
 }
 
@@ -285,7 +321,7 @@ export const RedwoodApolloProvider: React.FunctionComponent<{
         logLevel={logLevel}
       >
         <GraphQLHooksProvider
-          useQuery={useQuery}
+          useQuery={useSuspenseQuery}
           useMutation={useMutation}
           useSubscription={useSubscription}
         >
