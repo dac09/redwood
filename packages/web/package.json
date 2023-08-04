@@ -1,6 +1,6 @@
 {
   "name": "@redwoodjs/web",
-  "version": "5.0.0",
+  "version": "6.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/redwoodjs/redwood.git",
@@ -31,13 +31,13 @@
     "build:types": "tsc --build --verbose",
     "build:watch": "nodemon --watch src --ext \"js,jsx,ts,tsx\" --ignore dist --exec \"yarn build\"",
     "prepublishOnly": "NODE_ENV=production yarn build",
-    "test": "jest src",
+    "test": "jest",
     "test:watch": "yarn test --watch"
   },
   "dependencies": {
     "@apollo/client": "rc",
     "@babel/runtime-corejs3": "7.22.6",
-    "@redwoodjs/auth": "5.0.0",
+    "@redwoodjs/auth": "6.0.2",
     "core-js": "3.31.1",
     "graphql": "16.7.1",
     "graphql-tag": "2.12.6",

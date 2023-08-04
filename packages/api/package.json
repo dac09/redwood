@@ -1,6 +1,6 @@
 {
   "name": "@redwoodjs/api",
-  "version": "5.0.0",
+  "version": "6.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/redwoodjs/redwood.git",
@@ -32,8 +32,8 @@
   },
   "dependencies": {
     "@babel/runtime-corejs3": "7.22.6",
-    "@prisma/client": "5.0.0",
-    "@whatwg-node/fetch": "0.9.7",
+    "@prisma/client": "5.1.0",
+    "@whatwg-node/fetch": "0.9.9",
     "core-js": "3.31.1",
     "humanize-string": "2.1.0",
     "jsonwebtoken": "9.0.0",
