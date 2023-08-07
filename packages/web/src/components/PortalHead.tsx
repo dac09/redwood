@@ -1,12 +1,18 @@
+import React from 'react'
+
 import { createPortal } from 'react-dom'
 
 import { useServerInsertedHTML } from './ServerInject'
 
 const PortalHead: React.FC<React.PropsWithChildren> = ({ children }) => {
   useServerInsertedHTML(() => {
-    // @TODO this component should be wrapped in: document.head.append()
-    // because its possible for meta tags to be rendered after <head> is closed
-    return children
+    // Add "data-rwjs-head" attribute to anything inside <PortalHead>,
+    // This is then later moved to the <head> in the final block of the transform stream (see streamHelpers.ts)
+    return React.Children.toArray(children).map((child, index) => {
+      return React.cloneElement(child as React.ReactElement, {
+        'data-rwjs-head': `bazinga-${index}`,
+      })
+    })
   })
 
   if (typeof window === 'undefined') {
