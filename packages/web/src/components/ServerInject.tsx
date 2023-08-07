@@ -1,4 +1,4 @@
-import React, { Fragment, ReactNode, useContext } from 'react'
+import React, { Fragment, ReactNode, useContext, useId } from 'react'
 
 /**
  *
@@ -51,8 +51,12 @@ export const ServerInjectedHtml = ({
     injectionState.delete(callback)
   }
 
+  const fragmentId = useId()
+
   return serverInsertedHtml.map((html, i) => {
-    return <Fragment key={`rwjs-server-injected-${i}`}>{html}</Fragment>
+    return (
+      <Fragment key={`rw-server-inserted-${fragmentId}-${i}`}>{html}</Fragment>
+    )
   })
 }
 
@@ -64,4 +68,15 @@ export function useServerInsertedHTML(callback: () => React.ReactNode): void {
   if (addInsertedServerHTMLCallback) {
     addInsertedServerHTMLCallback(callback)
   }
+}
+
+// @TODO use this in streamHelpers final block
+export const AppendToHead = ({ tagsToAppend }: { tagsToAppend: string }) => {
+  return (
+    <script
+      dangerouslySetInnerHTML={{
+        __html: `document?.head.append(${tagsToAppend})`,
+      }}
+    />
+  )
 }

@@ -1,5 +1,5 @@
+import path from 'node:path'
 import { Writable } from 'node:stream'
-import path from 'path'
 
 import React from 'react'
 
@@ -33,7 +33,7 @@ export function reactRenderToStream({
   const rwPaths = getPaths()
 
   const bootstrapModules = [
-    path.join(__dirname, '../inject', 'reactRefresh.js'),
+    path.join(__dirname, '../../inject', 'reactRefresh.js'),
   ]
 
   if (includeJs) {
@@ -54,11 +54,6 @@ export function reactRenderToStream({
 
   // This ensures an isolated state for each request
   const { injectionState, injectToPage } = createInjector()
-  console.log(`👉 \n ~ file: streamHelpers.ts:57 ~ injectToPage:`, injectToPage)
-  console.log(
-    `👉 \n ~ file: streamHelpers.ts:57 ~ injectionState:`,
-    injectionState
-  )
 
   // This is effectively a transformer stream
   const intermediateStream = createServerInjectionStream({
@@ -83,7 +78,7 @@ export function reactRenderToStream({
     ),
     {
       bootstrapScriptContent: includeJs
-        ? `window.__assetMap = function() { return ${assetMap} }`
+        ? `window.__REDWOOD__ASSET_MAP = ${assetMap}`
         : undefined,
       bootstrapModules,
       onShellReady() {
