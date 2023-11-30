@@ -1,5 +1,6 @@
 import path from 'path'
 
+import { createServerAdapter } from '@whatwg-node/server'
 import c from 'ansi-colors'
 import type { Handler } from 'aws-lambda'
 import fg from 'fast-glob'
@@ -80,6 +81,43 @@ interface LambdaHandlerRequest extends RequestGenericInterface {
   Params: {
     routeName: string
   }
+}
+
+// const myServerAdapter = createServerAdapter((_request: Request) => {
+//   console.log(`👉 \n ~ file: lambdaLoader.ts:87 ~ _request:`, _request)
+//   console.log(
+//     `👉 \n ~ file: lambdaLoader.ts:90 ~ LAMBDA_FUNCTIONS:`,
+//     LAMBDA_FUNCTIONS
+//   )
+//   return LAMBDA_FUNCTIONS['bazinga']
+// })
+
+export const fetchRequestHandler = async (
+  req: FastifyRequest<LambdaHandlerRequest>,
+  reply: FastifyReply
+): Promise<FastifyReply> => {
+  const { routeName } = req.params
+
+  // @ts-expect-error handle errors later
+  const myServerAdapter = createServerAdapter(LAMBDA_FUNCTIONS[routeName])
+
+  const response = await myServerAdapter.handleNodeRequest(req, {
+    req,
+    reply,
+  })
+
+  console.log(`👉 \n ~ file: lambdaLoader.ts:99 ~ response:`, response)
+
+  response.headers.forEach((value, key) => {
+    reply.header(key, value)
+  })
+
+  reply.status(response.status)
+
+  // Fastify doesn't accept `null` as a response body
+  reply.send(response.body || undefined)
+
+  return reply
 }
 
 /**

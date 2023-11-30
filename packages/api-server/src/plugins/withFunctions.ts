@@ -5,7 +5,11 @@ import fastifyRawBody from 'fastify-raw-body'
 import { loadFastifyConfig } from '../fastify'
 import type { ApiServerArgs } from '../types'
 
-import { lambdaRequestHandler, loadFunctionsFromDist } from './lambdaLoader'
+import {
+  fetchRequestHandler,
+  lambdaRequestHandler,
+  loadFunctionsFromDist,
+} from './lambdaLoader'
 
 const withFunctions = async (
   fastify: FastifyInstance,
@@ -31,6 +35,9 @@ const withFunctions = async (
     await configureFastify(fastify, { side: 'api', ...options })
   }
 
+  fastify.all(`/fetchReq`, fetchRequestHandler)
+
+  // fastify.all(`${apiRootPath}:routeName`, createServerAdapter(genericRequestHandler))
   fastify.all(`${apiRootPath}:routeName`, lambdaRequestHandler)
   fastify.all(`${apiRootPath}:routeName/*`, lambdaRequestHandler)
 
