@@ -35,7 +35,7 @@ const withFunctions = async (
     await configureFastify(fastify, { side: 'api', ...options })
   }
 
-  fastify.all(`/fetchReq`, fetchRequestHandler)
+  fastify.all(`/fetchReq/:routeName`, fetchRequestHandler)
 
   // fastify.all(`${apiRootPath}:routeName`, createServerAdapter(genericRequestHandler))
   fastify.all(`${apiRootPath}:routeName`, lambdaRequestHandler)

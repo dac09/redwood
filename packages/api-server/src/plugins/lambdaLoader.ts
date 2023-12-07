@@ -106,8 +106,6 @@ export const fetchRequestHandler = async (
     reply,
   })
 
-  console.log(`👉 \n ~ file: lambdaLoader.ts:99 ~ response:`, response)
-
   response.headers.forEach((value, key) => {
     reply.header(key, value)
   })
