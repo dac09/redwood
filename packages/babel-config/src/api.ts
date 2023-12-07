@@ -114,6 +114,12 @@ export const getApiSideBabelPlugins = (
             members: ['context'],
             path: '@redwoodjs/graphql-server',
           },
+
+          {
+            // import { Response } from '@whatwg-node/fetch'
+            members: ['Response'],
+            path: '@whatwg-node/fetch',
+          },
         ],
       },
       'rwjs-babel-auto-import',
