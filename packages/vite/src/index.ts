@@ -4,7 +4,7 @@ import path from 'path'
 import react from '@vitejs/plugin-react'
 import type { InputOption } from 'rollup'
 import type { ConfigEnv, UserConfig, PluginOption } from 'vite'
-import { normalizePath } from 'vite'
+import { mergeConfig, normalizePath } from 'vite'
 
 import { getWebSideDefaultBabelConfig } from '@redwoodjs/babel-config'
 import { getConfig, getPaths } from '@redwoodjs/project-config'
@@ -37,48 +37,8 @@ export default function redwoodPluginVite(): PluginOption[] {
     .readFileSync(path.join(rwPaths.api.base, 'package.json'), 'utf-8')
     .includes('@redwoodjs/realtime')
 
+  console.log('👉 XXXXXX Definitely loading the vite plugin INIT')
   return [
-    {
-      name: 'redwood-plugin-vite-html-env',
-
-      // Vite can support replacing environment variables in index.html but
-      // there are currently two issues with that:
-      // 1. It requires the environment variables to be exposed on
-      //    `import.meta.env`, but we expose them on `process.env` in Redwood.
-      // 2. There's an open issue on Vite where it adds extra quotes around
-      //    the replaced values, which breaks trying to use environment
-      //    variables in src attributes for example.
-      // Until those issues are resolved, we'll do the replacement ourselves
-      // instead using transformIndexHtml. Doing it this was was also the
-      // recommended way until Vite added built-in support for it.
-      //
-      // Extra quotes issue: https://github.com/vitejs/vite/issues/13424
-      // transformIndexHtml being the recommended way:
-      //   https://github.com/vitejs/vite/issues/3105#issuecomment-1059975023
-      transformIndexHtml: {
-        // Setting order: 'pre' so that it runs before the built-in
-        // html env replacement.
-        order: 'pre',
-        handler: (html: string) => {
-          let newHtml = html
-
-          rwConfig.web.includeEnvironmentVariables.map((envName) => {
-            newHtml = newHtml.replaceAll(
-              `%${envName}%`,
-              process.env[envName] || ''
-            )
-          })
-
-          Object.entries(process.env).forEach(([envName, value]) => {
-            if (envName.startsWith('REDWOOD_ENV_')) {
-              newHtml = newHtml.replaceAll(`%${envName}%`, value || '')
-            }
-          })
-
-          return newHtml
-        },
-      },
-    },
     {
       name: 'redwood-plugin-vite',
 
@@ -142,7 +102,7 @@ export default function redwoodPluginVite(): PluginOption[] {
           apiPort = rwConfig.api.port
         }
 
-        return {
+        const rwVitePluginConfigDefaults: UserConfig = {
           root: rwPaths.web.src,
           // Disabling for now, let babel handle this for consistency
           // resolve: {
@@ -161,6 +121,71 @@ export default function redwoodPluginVite(): PluginOption[] {
             // postcss: './config/',
             postcss: rwPaths.web.config,
           },
+          plugins: [
+            {
+              name: 'redwood-plugin-vite-html-env',
+
+              // Vite can support replacing environment variables in index.html but
+              // there are currently two issues with that:
+              // 1. It requires the environment variables to be exposed on
+              //    `import.meta.env`, but we expose them on `process.env` in Redwood.
+              // 2. There's an open issue on Vite where it adds extra quotes around
+              //    the replaced values, which breaks trying to use environment
+              //    variables in src attributes for example.
+              // Until those issues are resolved, we'll do the replacement ourselves
+              // instead using transformIndexHtml. Doing it this was was also the
+              // recommended way until Vite added built-in support for it.
+              //
+              // Extra quotes issue: https://github.com/vitejs/vite/issues/13424
+              // transformIndexHtml being the recommended way:
+              //   https://github.com/vitejs/vite/issues/3105#issuecomment-1059975023
+              transformIndexHtml: {
+                // Setting order: 'pre' so that it runs before the built-in
+                // html env replacement.
+                order: 'pre',
+                handler: (html: string) => {
+                  let newHtml = html
+
+                  rwConfig.web.includeEnvironmentVariables.map((envName) => {
+                    newHtml = newHtml.replaceAll(
+                      `%${envName}%`,
+                      process.env[envName] || ''
+                    )
+                  })
+
+                  Object.entries(process.env).forEach(([envName, value]) => {
+                    if (envName.startsWith('REDWOOD_ENV_')) {
+                      newHtml = newHtml.replaceAll(`%${envName}%`, value || '')
+                    }
+                  })
+
+                  return newHtml
+                },
+              },
+            },
+            // We can remove when streaming is stable
+            rwConfig.experimental.streamingSsr.enabled && swapApolloProvider(),
+            handleJsAsJsx(),
+            // Remove the splash-page from the bundle.
+            removeFromBundle([
+              {
+                id: /@redwoodjs\/router\/dist\/splash-page/,
+              },
+            ]),
+            !realtimeEnabled &&
+              removeFromBundle([
+                {
+                  id: /@redwoodjs\/web\/dist\/apollo\/sseLink/,
+                },
+              ]),
+            react({
+              babel: {
+                ...getWebSideDefaultBabelConfig({
+                  forVite: true,
+                }),
+              },
+            }),
+          ],
           server: {
             open: rwConfig.browser.open,
             port: rwConfig.web.port,
@@ -170,7 +195,8 @@ export default function redwoodPluginVite(): PluginOption[] {
                 target: `http://${apiHost}:${apiPort}`,
                 changeOrigin: false,
                 // Remove the `.redwood/functions` part, but leave the `/graphql`
-                rewrite: (path) => path.replace(rwConfig.web.apiUrl, ''),
+                rewrite: (path: string) =>
+                  path.replace(rwConfig.web.apiUrl, ''),
                 configure: (proxy) => {
                   // @MARK: this is a hack to prevent showing confusing proxy errors on startup
                   // because Vite launches so much faster than the API server.
@@ -210,12 +236,11 @@ export default function redwoodPluginVite(): PluginOption[] {
             },
           },
           build: {
+            // @MARK: For RSC and Streaming, we build to dist/client directory
             outDir:
-              options.build?.outDir ||
-              // @MARK: For RSC and Streaming, we build to dist/client directory
-              (streamingBuild || rscBuild
+              streamingBuild || rscBuild
                 ? rwPaths.web.distClient
-                : rwPaths.web.dist),
+                : rwPaths.web.dist,
             emptyOutDir: true,
             manifest: !env.ssrBuild ? 'client-build-manifest.json' : undefined,
             sourcemap: !env.ssrBuild && rwConfig.web.sourceMap, // Note that this can be boolean or 'inline'
@@ -239,30 +264,12 @@ export default function redwoodPluginVite(): PluginOption[] {
             },
           },
         }
+
+        // Merge the config passed in via build with the Redwood Vite config
+        // giving preference to the passed in one!
+        return mergeConfig(rwVitePluginConfigDefaults, options)
       },
     },
-    // We can remove when streaming is stable
-    rwConfig.experimental.streamingSsr.enabled && swapApolloProvider(),
-    handleJsAsJsx(),
-    // Remove the splash-page from the bundle.
-    removeFromBundle([
-      {
-        id: /@redwoodjs\/router\/dist\/splash-page/,
-      },
-    ]),
-    !realtimeEnabled &&
-      removeFromBundle([
-        {
-          id: /@redwoodjs\/web\/dist\/apollo\/sseLink/,
-        },
-      ]),
-    react({
-      babel: {
-        ...getWebSideDefaultBabelConfig({
-          forVite: true,
-        }),
-      },
-    }),
   ]
 }
 
