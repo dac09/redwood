@@ -1,6 +1,7 @@
 import path from 'node:path'
 
 import react from '@vitejs/plugin-react'
+import type { UserConfig } from 'vite'
 import { build as viteBuild } from 'vite'
 
 import { getWebSideDefaultBabelConfig } from '@redwoodjs/babel-config'
@@ -21,22 +22,16 @@ export async function rscBuildClient(clientEntryFiles: Record<string, string>) {
   console.log('Starting RSC client build.... \n')
   const rwPaths = getPaths()
 
-  if (process.cwd() !== rwPaths.web.base) {
-    throw new Error(
-      'Looks like you are running the command from the wrong dir, this can lead to unintended consequences on CSS processing'
-    )
-  }
-
-  const clientBuildOutput = await viteBuild({
-    // @MARK  This runs on TOP of the settings in rw-vite-plugin, because we don't set configFile: false
-    // but if you actually set the config file, it runs the transforms twice
+  const rscBuildClientConfig: UserConfig = {
     root: rwPaths.web.src,
     envPrefix: 'REDWOOD_ENV_',
-    publicDir: path.join(rwPaths.web.base, 'public'),
+    // @ts-expect-error SHUTUP. Using the wrong type here I think
     envFile: false,
-    // @MARK: We need to duplicate the defines here.
+    publicDir: path.join(rwPaths.web.base, 'public'),
+    // @TODO: Remove this @MARK: We need to duplicate the defines here.
     define: getViteDefines(),
     plugins: [
+      // @TODO override the viteindex
       // @MARK We need to duplicate the plugins here.... otherwise builds fail I don't understand why
       react({
         babel: {
@@ -78,7 +73,15 @@ export async function rscBuildClient(clientEntryFiles: Record<string, string>) {
     esbuild: {
       logLevel: 'debug',
     },
-  })
+  }
+
+  if (process.cwd() !== rwPaths.web.base) {
+    throw new Error(
+      'Looks like you are running the command from the wrong dir, this can lead to unintended consequences on CSS processing'
+    )
+  }
+
+  const clientBuildOutput = await viteBuild(rscBuildClientConfig)
 
   if (!('output' in clientBuildOutput)) {
     throw new Error('Unexpected vite client build output')

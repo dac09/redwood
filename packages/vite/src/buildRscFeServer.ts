@@ -15,7 +15,7 @@ export const buildRscClientAndWorker = async () => {
   // Generate the client bundle
   const clientBuildOutput = await rscBuildClient(clientEntryFiles)
 
-  // Generate the server output
+  // Generate the RSC worker output
   const serverBuildOutput = await rscBuildForWorker(
     clientEntryFiles,
     serverEntryFiles,

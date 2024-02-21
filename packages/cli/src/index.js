@@ -137,6 +137,7 @@ async function main() {
       recordTelemetryAttributes({ command: '--help' })
     }
 
+    // @TODO: BIG RED BOX > FIX MEEEEEEE
     try {
       // Run the command via yargs
       await runYargs()
