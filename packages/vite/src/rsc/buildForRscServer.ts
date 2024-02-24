@@ -6,24 +6,31 @@ import { build as viteBuild } from 'vite'
 import { getWebSideDefaultBabelConfig } from '@redwoodjs/babel-config'
 import { getPaths } from '@redwoodjs/project-config'
 
+import { getEnvVarDefinitions } from '../envVarDefinitions'
 import { onWarn } from '../lib/onWarn'
+
+import { rscTransformPlugin } from './rscVitePlugins'
 
 /**
  * RSC build. Step 3.
- * buildFeServer -> buildRscFeServer -> rscBuildForWorker
- * Generate the output to be used on the rsc worker (not the actual server!)
+ * buildFeServer -> buildRscFeServer -> buildForRscServer
+ * Generate the output to be used by the rsc worker (not the actual server!)
  */
 // @TODO(RSC_DC): no redwood-vite plugin, add it back in here
-export async function rscBuildForWorker(
+export async function buildForRscServer(
   clientEntryFiles: Record<string, string>,
   serverEntryFiles: Record<string, string>,
   customModules: Record<string, string>
 ) {
-  console.log('Starting RSC worker build.... \n')
+  console.log('Starting RSC worker build...\n')
   const rwPaths = getPaths()
 
+  if (!rwPaths.web.entries) {
+    throw new Error('RSC entries file not found')
+  }
+
   const input = {
-    entries: rwPaths.web.entries as string,
+    entries: rwPaths.web.entries,
     ...clientEntryFiles,
     ...serverEntryFiles,
     ...customModules,
@@ -31,12 +38,14 @@ export async function rscBuildForWorker(
 
   const workerBuildOutput = await viteBuild({
     configFile: false, // @MARK disable loading the original plugin, only use settings in this file. This prevents issues with the routes-auto-loader
-    root: rwPaths.web.src, // @MARK this used to base, not sure if intentional or not!!!
+    root: rwPaths.web.src, // @MARK this used to be `rwPaths.web.base`, not sure if intentional or not!!!
     envFile: false,
     legacy: {
       // @MARK: for the worker, we're building ESM! (not CJS)
       buildSsrCjsExternalHeuristics: false,
     },
+    // TODO (RSC) (Tobbe): Can this be removed?
+    define: getEnvVarDefinitions(),
     ssr: {
       // Externalize everything except packages with files that have
       // 'use client' in them (which are the files in `clientEntryFiles`)
@@ -84,6 +93,13 @@ export async function rscBuildForWorker(
           }),
         },
       }),
+      // The rscTransformPlugin maps paths like
+      // /Users/tobbe/.../rw-app/node_modules/@tobbe.dev/rsc-test/dist/rsc-test.es.js
+      // to
+      // /Users/tobbe/.../rw-app/web/dist/server/assets/rsc0.js
+      // That's why it needs the `clientEntryFiles` data
+      // (It does other things as well, but that's why it needs clientEntryFiles)
+      rscTransformPlugin(clientEntryFiles),
     ],
     build: {
       ssr: true,

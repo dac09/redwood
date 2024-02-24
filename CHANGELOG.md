@@ -2,6 +2,57 @@
 
 ## Unreleased
 
+- Add support for additional env var files (#9961)
+
+  Fixes #9877. This PR adds a new middleware step to the CLI that looks for an `--include-env-files` flag and includes `.env.[file]` to the list of dotfiles to load. This PR also introduces functionality so that `.env.[file]` files are loaded based on `NODE_ENV`.
+
+  Using the `--include-env-files` flag:
+
+  ```bash
+  yarn rw exec myScript --include-env-files prod stripe-prod
+  # Alternatively you can specify the flag twice:
+  yarn rw exec myScript --include-env-files prod --include-env-files stripe-prod
+  ```
+
+  Using `NODE_ENV`:
+
+  ```
+  # loads .env.production
+  NODE_ENV=production yarn rw exec myScript
+  ```
+
+  These files are loaded in addition to `.env` and `.env.defaults` and more generally are additive. Subsequent dotfiles won't overwrite environment variables defined previous ones. As such, files loaded via NODE_ENV have lower priority than those loaded specifically via `--include-env-files`.
+
+  Note that this feature is mainly for local scripting. Most deploy providers don't let you upload dotfiles and usually have their own way of determining environments.
+
+- fix(render): reduce memory and handle server file
+
+  This PR improves Render deploys by reducing memory consumption and fixing it so that it uses the server file if it's present.
+
+  Render deploys seems to consistently run out of memory during the data migration step. This step is configurable and its doubtful that every deploy has data migrations to apply, but it's enabled by default so it runs every time. The main issue is that the data migrate functionality is a plugin so a yarn install kicks off in Render's deploy container which must be more memory-constrained than the build container. (Assuming there are two different containers, which seems to be the case.)
+
+  Instead of running data migrations, this PR issues a warning that if you want to run data migrations, you need to first add the `@redwoodjs/cli-data-migrate` package as a devDependency:
+
+  ```
+  yarn add -D @redwoodjs/cli-data-migrate
+  ```
+
+  That way a `yarn install` won't be necessary to run data migrations.
+
+  Although this PR fixes Render deploy so that it uses the server file if present, realtime features still don't seem to work. We're still investigating; in the meantime, consider using another provider like Coherence if you're just getting started and want to try out realtime features.
+
+- Update MetaTags to be Metadata in Docs (#10053)
+
+  The tutorial still used the `MetaTags` component instead of the newer `Metadata` component that the generator templates use. This PR updates all instances of `MetaTags` with `Metadata`.
+
+## v7.0.2
+
+- See https://github.com/redwoodjs/redwood/releases/tag/v7.0.2
+
+## v7.0.1
+
+- See https://github.com/redwoodjs/redwood/releases/tag/v7.0.1
+
 ## v7.0.0
 
 - See https://github.com/redwoodjs/redwood/releases/tag/v7.0.0 for the release notes and https://community.redwoodjs.com/t/redwood-v7-0-0-upgrade-guide/5713 for the upgrade guide

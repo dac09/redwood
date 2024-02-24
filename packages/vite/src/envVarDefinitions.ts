@@ -2,19 +2,18 @@ import path from 'node:path'
 
 import { getConfig, getPaths } from '@redwoodjs/project-config'
 
-export function getViteDefines(): Record<string, any> | undefined {
+export function getEnvVarDefinitions() {
   const rwConfig = getConfig()
   const rwPaths = getPaths()
 
-  const graphQlUrl =
-    rwConfig.web.apiGraphQLUrl ?? rwConfig.web.apiUrl + '/graphql'
-
   return {
     RWJS_ENV: {
-      __REDWOOD__APP_TITLE: rwConfig.web.title || path.basename(rwPaths.base),
-      RWJS_API_GRAPHQL_URL: graphQlUrl,
+      // @NOTE we're avoiding process.env here, unlike webpack
+      RWJS_API_GRAPHQL_URL:
+        rwConfig.web.apiGraphQLUrl ?? rwConfig.web.apiUrl + '/graphql',
       RWJS_API_URL: rwConfig.web.apiUrl,
-      RWJS_EXP_STREAMING_SSR: rwConfig.experimental?.streamingSsr?.enabled,
+      __REDWOOD__APP_TITLE: rwConfig.web.title || path.basename(rwPaths.base),
+      RWJS_EXP_STREAMING_SSR: rwConfig.experimental.streamingSsr?.enabled,
       RWJS_EXP_RSC: rwConfig.experimental?.rsc?.enabled,
     },
     RWJS_DEBUG_ENV: {
@@ -30,11 +29,13 @@ export function getViteDefines(): Record<string, any> | undefined {
     // prefixed with REDWOOD_ENV_
     ...Object.fromEntries(
       rwConfig.web.includeEnvironmentVariables.flatMap((envName) => [
-        // TODO (RSC): Figure out if/why we need to disable eslint here.
+        // TODO: Figure out if/why we need to disable eslint here, when we
+        // didn't have to before, when this code was in index.ts
         // Re-enable if possible
         // eslint-disable-next-line
         [`import.meta.env.${envName}`, JSON.stringify(process.env[envName])],
-        // TODO (RSC): Figure out if/why we need to disable eslint here
+        // TODO: Figure out if/why we need to disable eslint here, when we
+        // didn't have to before, when this code was in index.ts
         // Re-enable if possible
         // eslint-disable-next-line
         [`process.env.${envName}`, JSON.stringify(process.env[envName])],

@@ -185,15 +185,14 @@ export default function (
               //     LazyComponent: lazy(() => import(/* webpackChunkName: "..." */ <relativeImportPath>)
               //   }
 
-              /**
-               * Real example
-               * const LoginPage = {
-               *  name: "LoginPage",
-               *  prerenderLoader: () => __webpack_require__(require.resolveWeak("./pages/LoginPage/LoginPage")), */
-              // LazyComponent: lazy(() => import("/* webpackChunkName: "LoginPage" *//pages/LoginPage/LoginPage.tsx"))
-              /*
-               * }
-               */
+              //
+              // Real example
+              // const LoginPage = {
+              //   name: "LoginPage",
+              //   prerenderLoader: () => __webpack_require__(require.resolveWeak("./pages/LoginPage/LoginPage")),
+              //   LazyComponent: lazy(() => import("/* webpackChunkName: "LoginPage" *//pages/LoginPage/LoginPage.tsx"))
+              // }
+              //
               importArgument.leadingComments = [
                 {
                   type: 'CommentBlock',
@@ -252,12 +251,12 @@ export default function (
 }
 
 function prerenderLoaderImpl(
-  prerender: boolean,
+  forPrerender: boolean,
   forVite: boolean,
   relativeImport: string,
   t: typeof types
 ) {
-  if (prerender) {
+  if (forPrerender) {
     // This works for both vite and webpack
     return t.callExpression(t.identifier('require'), [
       t.stringLiteral(relativeImport),

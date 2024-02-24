@@ -1,19 +1,16 @@
-import { build as viteBuild } from 'vite'
-
 import { buildWeb } from '@redwoodjs/internal/dist/build/web'
 import { getConfig, getPaths } from '@redwoodjs/project-config'
 
 import { buildRouteHooks } from './buildRouteHooks'
 import { buildRouteManifest } from './buildRouteManifest'
-import { buildRscClientAndWorker } from './buildRscFeServer'
+import { buildRscClientAndServer } from './buildRscClientAndServer'
+import { buildForStreamingServer } from './streaming/buildForStreamingServer'
 import { ensureProcessDirWeb } from './utils'
 
 export interface BuildOptions {
   verbose?: boolean
   webDir?: string
 }
-
-// const SKIP = true
 
 export const buildFeServer = async ({ verbose, webDir }: BuildOptions = {}) => {
   ensureProcessDirWeb(webDir)
@@ -45,7 +42,7 @@ export const buildFeServer = async ({ verbose, webDir }: BuildOptions = {}) => {
       throw new Error('RSC entries file not found')
     }
 
-    await buildRscClientAndWorker()
+    await buildRscClientAndServer()
   }
 
   // We generate the RSC client bundle in the buildRscFeServer function
@@ -56,29 +53,10 @@ export const buildFeServer = async ({ verbose, webDir }: BuildOptions = {}) => {
   }
 
   // Generates the output used for the server (streaming/ssr but NOT rsc)
-  await buildForServer({ verbose })
+  await buildForStreamingServer({ verbose })
 
   await buildRouteHooks(verbose, rwPaths)
 
   // Write a route manifest
   await buildRouteManifest()
-}
-
-async function buildForServer({ verbose = false }: { verbose?: boolean }) {
-  console.log('Starting server build.... \n')
-  const rwPaths = getPaths()
-
-  await viteBuild({
-    configFile: rwPaths.web.viteConfig as string,
-    build: {
-      outDir: rwPaths.web.distServer,
-      ssr: true, // use boolean here, instead of string.
-      // rollup inputs are defined in the vite plugin
-    },
-    legacy: {
-      buildSsrCjsExternalHeuristics: true, // @MARK @TODO: this gets picked up by the RSC build if its in the index.js.....
-    },
-    envFile: false,
-    logLevel: verbose ? 'info' : 'warn',
-  })
 }
