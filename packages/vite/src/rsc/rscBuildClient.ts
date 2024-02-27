@@ -1,10 +1,7 @@
-import react from '@vitejs/plugin-react'
 import { build as viteBuild } from 'vite'
 
-import { getWebSideDefaultBabelConfig } from '@redwoodjs/babel-config'
 import { getPaths } from '@redwoodjs/project-config'
 
-import { getEnvVarDefinitions } from '../envVarDefinitions'
 import { onWarn } from '../lib/onWarn'
 import { ensureProcessDirWeb } from '../utils'
 
@@ -19,28 +16,12 @@ export async function rscBuildClient(clientEntryFiles: Record<string, string>) {
 
   ensureProcessDirWeb()
 
-  if (!rwPaths.web.entryClient || !rwPaths.web.viteConfig) {
-    throw new Error('Missing web/src/entry.client or web/vite.config.')
+  if (!rwPaths.web.entryClient) {
+    throw new Error('Missing web/src/entry.client')
   }
 
   const clientBuildOutput = await viteBuild({
-    configFile: rwPaths.web.viteConfig,
-    root: rwPaths.web.src,
-    envPrefix: 'REDWOOD_ENV_',
     envFile: false,
-    define: getEnvVarDefinitions(),
-    plugins: [
-      // @MARK We need to duplicate the plugins here... otherwise builds fail
-      // and I don't understand why
-      react({
-        babel: {
-          ...getWebSideDefaultBabelConfig({
-            forVite: true,
-            forRscClient: true,
-          }),
-        },
-      }),
-    ],
     build: {
       outDir: rwPaths.web.distClient,
       emptyOutDir: true, // Needed because `outDir` is not inside `root`
