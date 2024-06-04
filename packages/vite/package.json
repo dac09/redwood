@@ -12,13 +12,13 @@
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
       "require": "./dist/cjs/index.js",
-      "default": "./dist/cjs/index.js"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./client": {
       "types": "./dist/client.d.ts",
+      "require": "./dist/cjs/client.js",
       "default": "./dist/client.js"
     },
     "./clientSsr": {
@@ -32,7 +32,8 @@
     },
     "./buildFeServer": {
       "types": "./dist/buildFeServer.d.ts",
-      "default": "./dist/buildFeServer.js"
+      "require": "./dist/cjs/buildFeServer.js",
+      "import": "./dist/buildFeServer.js"
     },
     "./react-node-loader": {
       "types": "./dist/react-server-dom-webpack/node-loader.d.ts",

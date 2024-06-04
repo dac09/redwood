@@ -23,25 +23,25 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "default": "./dist/index.js"
+      "require": "./dist/BUILD_CJS_FIRST"
     },
     "./serverStore": {
-      "require": "./dist/server/serverStore.js",
+      "require": "./dist/BUILD_CJS_FIRST",
       "import": "./dist/server/serverStore.js",
       "types": "./dist/server/serverStore.d.ts"
     },
     "./cookie": {
-      "require": "./dist/server/CookieJar.js",
+      "require": "./dist/BUILD_CJS_FIRST",
       "import": "./dist/server/CookieJar.js",
       "types": "./dist/server/CookieJar.d.ts"
     },
     "./middleware": {
-      "require": "./dist/server/middleware.js",
+      "require": "./dist/BUILD_CJS_FIRST",
       "import": "./dist/server/middleware.js",
       "types": "./dist/server/middleware.d.ts"
     },
     "./serverInject": {
-      "require": "./dist/components/ServerInject.js",
+      "require": "./dist/BUILD_CJS_FIRST",
       "import": "./dist/components/ServerInject.js",
       "types": "./dist/components/ServerInject.d.ts"
     }
