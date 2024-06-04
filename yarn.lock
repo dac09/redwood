@@ -8725,6 +8725,7 @@ __metadata:
     "@redwoodjs/project-config": "workspace:*"
     "@redwoodjs/web": "workspace:*"
     "@swc/core": "npm:1.5.7"
+    "@types/babel-core": "npm:6.25.10"
     "@types/busboy": "npm:^1"
     "@types/cookie": "npm:^0"
     "@types/express": "npm:4"
@@ -8810,6 +8811,7 @@ __metadata:
     stacktracey: "npm:2.1.8"
     ts-toolbelt: "npm:9.6.0"
     tstyche: "npm:1.1.0"
+    tsx: "npm:4.10.3"
     typescript: "npm:5.4.5"
     vitest: "npm:1.6.0"
   peerDependencies:
