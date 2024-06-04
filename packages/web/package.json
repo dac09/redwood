@@ -19,6 +19,18 @@
     "tsc": "./dist/bins/tsc.js",
     "webpack": "./dist/bins/webpack.js"
   },
+  "exports": {
+    "./serverStore": {
+      "require": "./dist/server/serverStore.js",
+      "import": "./dist/server/serverStore.js",
+      "types": "./dist/server/serverStore.d.ts"
+    },
+    "./cookie": {
+      "require": "./dist/server/CookieJar.js",
+      "import": "./dist/server/CookieJar.js",
+      "types": "./dist/server/CookieJar.d.ts"
+    }
+  },
   "files": [
     "dist",
     "apollo",
