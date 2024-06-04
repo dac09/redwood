@@ -14,10 +14,7 @@ import { getConfig, getPaths } from '@redwoodjs/project-config'
 import { LocationProvider } from '@redwoodjs/router'
 import type { TagDescriptor } from '@redwoodjs/web'
 // @TODO (ESM), use exports field. Cannot import from web because of index exports
-import {
-  ServerHtmlProvider,
-  createInjector,
-} from '@redwoodjs/web/dist/components/ServerInject'
+import { ServerHtmlProvider, createInjector } from '@redwoodjs/web/serverInject'
 
 import { renderFromDist } from '../clientSsr.js'
 import type { MiddlewareResponse } from '../middleware/MiddlewareResponse.js'

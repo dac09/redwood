@@ -20,6 +20,11 @@
     "webpack": "./dist/bins/webpack.js"
   },
   "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
     "./serverStore": {
       "require": "./dist/server/serverStore.js",
       "import": "./dist/server/serverStore.js",
@@ -29,6 +34,11 @@
       "require": "./dist/server/CookieJar.js",
       "import": "./dist/server/CookieJar.js",
       "types": "./dist/server/CookieJar.d.ts"
+    },
+    "./serverInject": {
+      "require": "./dist/components/ServerInject.js",
+      "import": "./dist/components/ServerInject.js",
+      "types": "./dist/components/ServerInject.d.ts"
     }
   },
   "files": [

@@ -3,7 +3,7 @@ import { cjsInterop } from 'vite-plugin-cjs-interop'
 
 import { getPaths } from '@redwoodjs/project-config'
 
-import { rscRoutesAutoLoader } from '../plugins/vite-plugin-rsc-routes-auto-loader'
+import { rscRoutesAutoLoader } from '../plugins/vite-plugin-rsc-routes-auto-loader.js'
 
 export async function buildForStreamingServer({
   verbose = false,

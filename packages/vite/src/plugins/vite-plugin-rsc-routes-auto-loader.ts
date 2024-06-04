@@ -2,6 +2,7 @@ import path from 'path'
 
 import generate from '@babel/generator'
 import { parse as babelParse } from '@babel/parser'
+import type { NodePath } from '@babel/traverse'
 import traverse from '@babel/traverse'
 import * as t from '@babel/types'
 import type { Plugin } from 'vite'
@@ -103,8 +104,9 @@ export function rscRoutesAutoLoader(): Plugin {
       // All components used as Set wrappers
       const wrappers = new Set<string>()
 
+      // @ts-expect-error babel types ESM
       traverse(ast, {
-        ImportDeclaration(path) {
+        ImportDeclaration(path: NodePath<t.ImportDeclaration>) {
           const importPath = path.node.source.value
 
           if (importPath === null) {
@@ -132,7 +134,7 @@ export function rscRoutesAutoLoader(): Plugin {
           // function calls when this plugin executes, so no JSXElement nodes
           // will be present in the AST.
         },
-        CallExpression(path) {
+        CallExpression(path: NodePath<t.CallExpression>) {
           if (
             (t.isIdentifier(path.node.callee, { name: 'jsxs' }) ||
               t.isIdentifier(path.node.callee, { name: 'jsx' })) &&
@@ -187,7 +189,7 @@ export function rscRoutesAutoLoader(): Plugin {
           ]),
         )
       }
-
+      // @ts-expect-error babel types ESM
       return generate(ast).code
     },
   }

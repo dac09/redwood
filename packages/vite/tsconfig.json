@@ -2,7 +2,9 @@
   "extends": "../../tsconfig.compilerOption.json",
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "dist",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext"
   },
   "include": ["src/**/*", "./ambient.d.ts", "./modules.d.ts"],
   "references": [

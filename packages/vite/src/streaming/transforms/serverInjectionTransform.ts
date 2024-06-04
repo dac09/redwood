@@ -3,8 +3,7 @@ import React from 'react'
 import { renderToString } from 'react-dom/server'
 
 import type { RenderCallback } from '@redwoodjs/web'
-// @TODO (ESM), use exports field. Cannot import from web because of index exports
-import { ServerInjectedHtml } from '@redwoodjs/web/dist/components/ServerInject'
+import { ServerInjectedHtml } from '@redwoodjs/web/serverInject'
 
 import { encodeText } from './encode-decode.js'
 
