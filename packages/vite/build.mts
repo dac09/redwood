@@ -1,6 +1,7 @@
 import { build, defaultIgnorePatterns, defaultBuildOptions } from '@redwoodjs/framework-tools'
 
 import * as esbuild from 'esbuild'
+import { writeFileSync } from 'node:fs'
 
 // ESM build
 await build({
@@ -41,3 +42,12 @@ await esbuild.build({
 
   logLevel: 'info',
 })
+
+
+// Place a package.json file with `type: commonjs` in the dist folder so that
+// all .js files are treated as CommonJS files.
+writeFileSync('dist/cjs/package.json', JSON.stringify({ type: 'commonjs' }))
+
+// Place a package.json file with `type: module` in the dist/esm folder so that
+// all .js files are treated as ES Module files.
+writeFileSync('dist/package.json', JSON.stringify({ type: 'module' }))
