@@ -13,7 +13,9 @@
     "./package.json": "./package.json",
     ".": {
       "types": "./dist/index.d.ts",
-      "default": "./cjsWrapper.js"
+      "import": "./dist/index.js",
+      "require": "./dist/cjs/index.js",
+      "default": "./dist/cjs/index.js"
     },
     "./client": {
       "types": "./dist/client.d.ts",
@@ -36,12 +38,7 @@
       "types": "./dist/react-server-dom-webpack/node-loader.d.ts",
       "default": "./dist/react-server-dom-webpack/node-loader.js"
     },
-    "./bins/rw-vite-build.mjs": "./bins/rw-vite-build.mjs",
-    "./middleware": {
-      "types": "./dist/middleware/index.d.ts",
-      "import": "./dist/middleware/index.js",
-      "require": "./dist/cjs/middleware/index.js"
-    }
+    "./bins/rw-vite-build.mjs": "./bins/rw-vite-build.mjs"
   },
   "bin": {
     "rw-dev-fe": "./dist/devFeServer.js",
