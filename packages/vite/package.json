@@ -1,24 +1,28 @@
 {
   "name": "@redwoodjs/vite",
   "version": "7.0.0",
-  "type": "module",
   "description": "Vite configuration package for Redwood",
   "repository": {
     "type": "git",
     "url": "https://github.com/redwoodjs/redwood.git",
     "directory": "packages/vite"
   },
+  "type": "module",
   "license": "MIT",
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "require": "./dist/cjs/index.js",
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "default": "./dist/cjs/index.js"
+    },
+    "./buildFeServer": {
+      "types": "./dist/buildFeServer.d.ts",
+      "require": "./dist/cjs/buildFeServer.js",
+      "import": "./dist/buildFeServer.js"
     },
     "./client": {
       "types": "./dist/client.d.ts",
-      "require": "./dist/cjs/client.js",
       "default": "./dist/client.js"
     },
     "./clientSsr": {
@@ -29,11 +33,6 @@
       "types": "./dist/ClientRouter.d.ts",
       "react-server": "./dist/ServerRouter.js",
       "default": "./dist/ClientRouter.js"
-    },
-    "./buildFeServer": {
-      "types": "./dist/buildFeServer.d.ts",
-      "require": "./dist/cjs/buildFeServer.js",
-      "import": "./dist/buildFeServer.js"
     },
     "./react-node-loader": {
       "types": "./dist/react-server-dom-webpack/node-loader.d.ts",
@@ -90,6 +89,7 @@
     "yargs-parser": "21.1.1"
   },
   "devDependencies": {
+    "@types/babel-core": "6.25.10",
     "@types/busboy": "^1",
     "@types/cookie": "^0",
     "@types/express": "4",
