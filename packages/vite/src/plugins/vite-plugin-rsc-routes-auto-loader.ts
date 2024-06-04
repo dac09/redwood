@@ -1,9 +1,11 @@
 import path from 'path'
 
-import generate from '@babel/generator'
+import _generate from '@babel/generator'
+const generate = _generate.default
 import { parse as babelParse } from '@babel/parser'
 import type { NodePath } from '@babel/traverse'
-import traverse from '@babel/traverse'
+import _traverse from '@babel/traverse'
+const traverse = _traverse.default
 import * as t from '@babel/types'
 import type { Plugin } from 'vite'
 import { normalizePath } from 'vite'
@@ -104,7 +106,6 @@ export function rscRoutesAutoLoader(): Plugin {
       // All components used as Set wrappers
       const wrappers = new Set<string>()
 
-      // @ts-expect-error babel types ESM
       traverse(ast, {
         ImportDeclaration(path: NodePath<t.ImportDeclaration>) {
           const importPath = path.node.source.value
@@ -189,7 +190,7 @@ export function rscRoutesAutoLoader(): Plugin {
           ]),
         )
       }
-      // @ts-expect-error babel types ESM
+
       return generate(ast).code
     },
   }

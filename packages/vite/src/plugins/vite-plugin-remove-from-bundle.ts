@@ -43,3 +43,5 @@ export function excludeOnMatch(modulesToExclude: ModulesToExclude, id: string) {
   // Fallback to regular loaders
   return null
 }
+
+export { removeFromBundle }

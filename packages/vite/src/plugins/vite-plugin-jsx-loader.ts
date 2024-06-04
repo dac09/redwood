@@ -23,3 +23,5 @@ export default function handleJsAsJsx(): PluginOption {
     },
   }
 }
+
+export { handleJsAsJsx }

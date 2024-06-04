@@ -1,9 +1,11 @@
 import path from 'path'
 
-import generate from '@babel/generator'
+import _generate from '@babel/generator'
+const generate = _generate.default
 import { parse as babelParse } from '@babel/parser'
 import type { NodePath } from '@babel/traverse'
-import traverse from '@babel/traverse'
+import _traverse from '@babel/traverse'
+const traverse = _traverse.default
 import * as t from '@babel/types'
 import type { Plugin } from 'vite'
 import { normalizePath } from 'vite'
@@ -90,7 +92,6 @@ export function rscRoutesImports(): Plugin {
       // imported in the routes file otherwise there would be conflicts.
       const importedNames = new Set<string>()
 
-      // @ts-expect-error bazinga
       traverse(ast, {
         ImportDeclaration(path: NodePath<t.ImportDeclaration>) {
           const importPath = path.node.source.value
@@ -127,7 +128,6 @@ export function rscRoutesImports(): Plugin {
         )
       }
 
-      // @ts-expect-error not sure why generate type doesnt come thru
       return generate(ast).code
     },
   }
