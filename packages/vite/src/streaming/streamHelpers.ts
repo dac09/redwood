@@ -13,11 +13,10 @@ import { ServerAuthProvider } from '@redwoodjs/auth/dist/AuthProvider/ServerAuth
 import { getConfig, getPaths } from '@redwoodjs/project-config'
 import { LocationProvider } from '@redwoodjs/router'
 import type { TagDescriptor } from '@redwoodjs/web'
-// @TODO (ESM), use exports field. Cannot import from web because of index exports
+import type { MiddlewareResponse } from '@redwoodjs/web/middleware'
 import { ServerHtmlProvider, createInjector } from '@redwoodjs/web/serverInject'
 
 import { renderFromDist } from '../clientSsr.js'
-import type { MiddlewareResponse } from '../../../web/src/server/MiddlewareResponse.js'
 import type { ServerEntryType } from '../types.js'
 import { makeFilePath } from '../utils.js'
 
