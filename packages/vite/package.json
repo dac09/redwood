@@ -39,11 +39,8 @@
     "./bins/rw-vite-build.mjs": "./bins/rw-vite-build.mjs",
     "./middleware": {
       "types": "./dist/middleware/index.d.ts",
-      "default": "./dist/middleware/index.js"
-    },
-    "./serverStore": {
-      "types": "./dist/serverStore.d.ts",
-      "default": "./dist/serverStore.js"
+      "import": "./dist/middleware/index.js",
+      "require": "./dist/cjs/middleware/index.js"
     }
   },
   "bin": {

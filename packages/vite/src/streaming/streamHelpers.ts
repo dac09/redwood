@@ -17,7 +17,7 @@ import type { TagDescriptor } from '@redwoodjs/web'
 import { ServerHtmlProvider, createInjector } from '@redwoodjs/web/serverInject'
 
 import { renderFromDist } from '../clientSsr.js'
-import type { MiddlewareResponse } from '../middleware/MiddlewareResponse.js'
+import type { MiddlewareResponse } from '../../../web/src/server/MiddlewareResponse.js'
 import type { ServerEntryType } from '../types.js'
 import { makeFilePath } from '../utils.js'
 

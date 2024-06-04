@@ -1,11 +1,30 @@
-import { build, defaultIgnorePatterns } from '@redwoodjs/framework-tools'
+import { build, defaultIgnorePatterns, defaultBuildOptions } from '@redwoodjs/framework-tools'
 
 import * as esbuild from 'esbuild'
 
+// ESM build
 await build({
   entryPointOptions: {
     ignore: [...defaultIgnorePatterns, '**/bundled'],
-  }
+  },
+  buildOptions: {
+    ...defaultBuildOptions,
+    format: 'esm',
+    packages: 'external',
+  },
+})
+
+// CJS build
+await build({
+  entryPointOptions: {
+    ignore: [...defaultIgnorePatterns, '**/bundled'],
+  },
+  buildOptions: {
+    ...defaultBuildOptions,
+    tsconfig: 'tsconfig.build-cjs.json',
+    outdir: 'dist/cjs',
+    packages: 'external',
+  },
 })
 
 // We bundle some react packages with the "react-server" condition

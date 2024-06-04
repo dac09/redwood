@@ -9,6 +9,7 @@ import type Router from 'find-my-way'
 import type { HTTPMethod } from 'find-my-way'
 import type { ViteDevServer } from 'vite'
 
+import type { Middleware } from '@redwoodjs/web/middleware'
 import { getAuthState, getRequestHeaders } from '@redwoodjs/web/serverStore'
 
 import {
@@ -16,7 +17,6 @@ import {
   decodeReplyFromBusboy,
 } from '../bundled/react-server-dom-webpack.server.js'
 import { hasStatusCode } from '../lib/StatusError.js'
-import type { Middleware } from '../middleware/index.js'
 import { invoke } from '../middleware/invokeMiddleware.js'
 import { getFullUrlForFlightRequest } from '../utils.js'
 

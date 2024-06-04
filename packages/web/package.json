@@ -35,6 +35,11 @@
       "import": "./dist/server/CookieJar.js",
       "types": "./dist/server/CookieJar.d.ts"
     },
+    "./middleware": {
+      "require": "./dist/server/middleware.js",
+      "import": "./dist/server/middleware.js",
+      "types": "./dist/server/middleware.d.ts"
+    },
     "./serverInject": {
       "require": "./dist/components/ServerInject.js",
       "import": "./dist/components/ServerInject.js",

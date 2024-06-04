@@ -3,18 +3,14 @@ import type Router from 'find-my-way'
 import type { ViteDevServer } from 'vite'
 
 import { getConfig, getPaths } from '@redwoodjs/project-config'
+import { MiddlewareResponse } from '@redwoodjs/web/middleware'
+import type { MiddlewareRequest } from '@redwoodjs/web/middleware'
+import type { Middleware, MiddlewareClass } from '@redwoodjs/web/middleware'
 
 import type { EntryServer } from '../types.js'
 import { makeFilePath, ssrLoadEntryServer } from '../utils.js'
 
-import type { MiddlewareRequest } from './MiddlewareRequest.js'
-import { MiddlewareResponse } from './MiddlewareResponse.js'
-import type {
-  Middleware,
-  MiddlewareClass,
-  MiddlewareInvokeOptions,
-  MiddlewareReg,
-} from './types.js'
+import type { MiddlewareInvokeOptions, MiddlewareReg } from './types.js'
 
 type GroupedMw = Record<string, Middleware[]>
 
