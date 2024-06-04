@@ -36,28 +36,28 @@ import { buildManualDataTransport } from '@apollo/client-react-streaming/manual-
 import type { UseAuth } from '@redwoodjs/auth'
 import { useNoAuth } from '@redwoodjs/auth'
 import { ServerAuthContext } from '@redwoodjs/auth/dist/AuthProvider/ServerAuthProvider.js'
-import './typeOverride'
+import './typeOverride.js'
 
 import {
   FetchConfigProvider,
   useFetchConfig,
-} from '../components/FetchConfigProvider'
+} from '../components/FetchConfigProvider.js'
 import { GraphQLHooksProvider } from '../components/GraphQLHooksProvider.js'
-import { ServerHtmlContext } from '../components/ServerInject'
+import { ServerHtmlContext } from '../components/ServerInject.js'
 
 import type {
   RedwoodApolloLink,
   RedwoodApolloLinkFactory,
   RedwoodApolloLinkName,
   RedwoodApolloLinks,
-} from './links'
+} from './links.js'
 import {
   createAuthApolloLink,
   createFinalLink,
   createHttpLink,
   createTokenLink,
   createUpdateDataLink,
-} from './links'
+} from './links.js'
 
 export type ApolloClientCacheConfig = InMemoryCacheConfig
 
