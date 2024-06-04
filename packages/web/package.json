@@ -1,6 +1,7 @@
 {
   "name": "@redwoodjs/web",
   "version": "7.0.0",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/redwoodjs/redwood.git",
@@ -23,38 +24,53 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "require": "./dist/BUILD_CJS_FIRST"
+      "require": "./dist/cjs/index.js"
     },
     "./serverStore": {
-      "require": "./dist/BUILD_CJS_FIRST",
+      "require": "./dist/cjs/server/serverStore.js",
       "import": "./dist/server/serverStore.js",
       "types": "./dist/server/serverStore.d.ts"
     },
     "./cookie": {
-      "require": "./dist/BUILD_CJS_FIRST",
+      "require": "./dist/cjs/server/CookieJar.js",
       "import": "./dist/server/CookieJar.js",
       "types": "./dist/server/CookieJar.d.ts"
     },
     "./middleware": {
-      "require": "./dist/BUILD_CJS_FIRST",
+      "require": "./dist/cjs/server/middleware.js",
       "import": "./dist/server/middleware.js",
       "types": "./dist/server/middleware.d.ts"
     },
     "./serverInject": {
-      "require": "./dist/BUILD_CJS_FIRST",
+      "require": "./dist/cjs/components/ServerInject.js",
       "import": "./dist/components/ServerInject.js",
       "types": "./dist/components/ServerInject.d.ts"
+    },
+    "./dist/components/*": {
+      "require": "./dist/cjs/components/*.js",
+      "import": "./dist/components/*.js"
+    },
+    "./dist/apollo/suspense": {
+      "require": "./dist/cjs/apollo/suspense.js",
+      "import": "./dist/apollo/suspense.js"
+    },
+    "./toast": {
+      "require": "./dist/cjs/toast/index.js",
+      "import": "./dist/toast/index.js",
+      "types": "./dist/toast/index.d.ts"
+    },
+    "./apollo": {
+      "require": "./dist/cjs/apollo/index.js",
+      "import": "./dist/apollo/index.js",
+      "types": "./dist/apollo/index.d.ts"
     }
   },
   "files": [
     "dist",
-    "apollo",
-    "toast",
     "src/entry"
   ],
   "scripts": {
-    "build": "yarn build:js && yarn build:types",
-    "build:js": "babel src -d dist --extensions \".js,.jsx,.ts,.tsx\"",
+    "build": "tsx ./build.ts && yarn build:types",
     "build:pack": "yarn pack -o redwoodjs-web.tgz",
     "build:types": "tsc --build --verbose",
     "build:watch": "nodemon --watch src --ext \"js,jsx,ts,tsx\" --ignore dist --exec \"yarn build\"",
@@ -91,6 +107,7 @@
     "react": "19.0.0-beta-04b058868c-20240508",
     "react-dom": "19.0.0-beta-04b058868c-20240508",
     "tstyche": "1.1.0",
+    "tsx": "4.10.3",
     "typescript": "5.4.5",
     "vitest": "1.6.0"
   },
