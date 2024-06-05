@@ -34,6 +34,11 @@
       "react-server": "./dist/ServerRouter.js",
       "default": "./dist/ClientRouter.js"
     },
+    "./SsrRouter": {
+      "types": "./dist/SsrRouter.d.ts",
+      "react-server": "./dist/ServerRouter.js",
+      "default": "./dist/SsrRouter.js"
+    },
     "./react-node-loader": {
       "types": "./dist/react-server-dom-webpack/node-loader.d.ts",
       "default": "./dist/react-server-dom-webpack/node-loader.js"

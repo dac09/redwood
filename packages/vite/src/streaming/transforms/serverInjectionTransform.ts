@@ -1,19 +1,28 @@
-import React from 'react'
+import type React from 'react'
 
-import { renderToString } from 'react-dom/server'
+import type RDServerModule from 'react-dom/server'
 
 import type { RenderCallback } from '@redwoodjs/web'
-import { ServerInjectedHtml } from '@redwoodjs/web/serverInject'
+import type * as ServerInjectModule from '@redwoodjs/web/serverInject'
 
 import { encodeText } from './encode-decode.js'
 
+type ServerInjectType = typeof ServerInjectModule
+type RDServerType = typeof RDServerModule
+
 type CreateServerInjectionArgs = {
   injectionState: Set<RenderCallback>
+  createElement: React['createElement']
+  ServerInjectedHtml: ServerInjectType['ServerInjectedHtml']
+  renderToString: RDServerType['renderToString']
   onlyOnFlush?: boolean
 }
 
 export function createServerInjectionTransform({
   injectionState,
+  createElement,
+  ServerInjectedHtml,
+  renderToString,
   onlyOnFlush = false,
 }: CreateServerInjectionArgs) {
   const transformStream = new TransformStream({
@@ -58,7 +67,7 @@ export function createServerInjectionTransform({
 
   function insertHtml(chunk?: Uint8Array) {
     const serverHtmlOutput = renderToString(
-      React.createElement(ServerInjectedHtml, {
+      createElement(ServerInjectedHtml, {
         injectionState,
       }),
     )
