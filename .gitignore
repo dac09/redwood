@@ -30,3 +30,6 @@ packages/create-redwood-app/create-redwood-app.tgz
 **/meta.*.json
 
 .nx/cache
+
+# Fragment generated code
+__fixtures__/example-todo-main/web/src/graphql/fragment-masking.ts
