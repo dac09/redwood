@@ -1,7 +1,4 @@
-import type {
-  Middleware,
-  MiddlewareClass,
-} from '@redwoodjs/web/dist/server/middleware'
+import type { Middleware, MiddlewareClass } from '@redwoodjs/web/middleware'
 
 // Tuple of [mw, '*.{extension}']
 export type MiddlewareReg = Array<

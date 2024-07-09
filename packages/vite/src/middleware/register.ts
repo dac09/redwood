@@ -11,10 +11,10 @@ import type {
 } from '@redwoodjs/web/dist/server/middleware.js'
 import { MiddlewareResponse } from '@redwoodjs/web/dist/server/middleware.js'
 
-import type { EntryServer } from '../types'
-import { makeFilePath, ssrLoadEntryServer } from '../utils'
+import type { EntryServer } from '../types.js'
+import { makeFilePath, ssrLoadEntryServer } from '../utils.js'
 
-import type { MiddlewareReg } from './types'
+import type { MiddlewareReg } from './types.js'
 
 type GroupedMw = Record<string, Middleware[]>
 
