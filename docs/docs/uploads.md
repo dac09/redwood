@@ -1,40 +1,27 @@
-# Uploads
+# Uploads & Storage
 
-Getting started with file uploads can open up a world of possibilities for your application. Whether you're enhancing user profiles with custom avatars, allowing document sharing, or enabling image galleries - Redwood enables an integrated way of managing your uploads.
+Getting started with file uploads can open up a world of possibilities for your application. Whether you're enhancing user profiles with custom avatars, allowing document sharing, or enabling image galleries - Redwood has an integrated way of uploading files and storing them.
 
-As with sending and manipulating other types of data, on Redwood this involves configuring and implementing three parts:
+There's two parts to this:
+1. Setting up the frontend and GraphQL schema to send to send files - Uploads
 
-1. The frontend to send to the data
-2. The GraphQL API to validate and receive the data into services
+2. Manipulate the data inside services, and pass it to Prisma, for persistence - Storage
 
-... and
-
-3. Manipulate the data inside services, and pass it to Prisma, for persistence
-
-Visually we can roughly breakdown the flow as follows
+We can roughly breakdown the flow as follows
 
 ![Redwood Uploads Flow Diagram](/img/uploads/uploads-flow.png)
 
 
-## Sending Files from the front end
+
+## Uploading Files
 
 ### 1. Setting up the File scalar
 
-Before we start sending files via GraphQL we need to tell Redwood how to handle them.
+Before we start sending files via GraphQL we need to tell Redwood how to handle them. Redwood and GraphQL Yoga are pre-configured to handle the `File` scalar. 
 
-While Redwood and GraphQL Yoga are pre-configured to handle files, you need to explicitly define the `File` scalar in your SDL (Schema Definition Language) file. Add the following line to your `profiles.sdl.ts` (or any of your sdl files):
-
-```graphql title="api/src/graphql/profiles.sdl.ts"
-scalar File
-```
-
-When defining fields that will handle file uploads, use the `File` scalar type.
-
-In your mutations, use the `File` scalar type for the fields where you are submitting an upload
+In your mutations, use the `File` scalar for the fields where you are submitting an upload
 
 ```graphql title="api/src/graphql/profiles.sdl.ts"
-scalar File
-
 input UpdateProfileInput {
   id: Int
   firstName: String
@@ -150,7 +137,7 @@ export const updateProfile = async ({ id, input }) => {
 
 You'll see that you are receiving an instance of [File](https://developer.mozilla.org/en-US/docs/Web/API/File).
 
-That's parts parts 1 & 2 done - you can receive uploaded files. In the next steps, we'll talk about some tooling and a Prisma client extension that Redwood gives you, to help you persist and manage your uploads.
+That's part 1 done - you can receive uploaded files. In the next steps, we'll talk about some tooling and a Prisma client extension that Redwood gives you, to help you persist and manage your uploads.
 
 <details>
 <summary>**What's happening behind the scenes?**</summary>
@@ -163,7 +150,7 @@ On the backend, GraphQL Yoga is pre-configured to handle multipart form requests
 
 </details>
 
-## Configuring the API side
+## Storage
 
 ### Prisma schema configuration
 
@@ -182,7 +169,7 @@ model Profile {
 
 This is because Prisma doesn't have a native File type. Instead, we store the file path or URL as a string in the database. The actual file processing and storage will be handled in your service layer, and pass the path to Prisma to save.
 
-### Setting up Uploads processors and Prisma extension
+### Setting up Storage processors and Prisma extension
 
 To make it easier (and more consistent) dealing with file uploads, Redwood gives you a standardized way of "processing" your uploads (i.e. save to storage) and a prisma extension that will handle deletion and updates automatically for you. The rest of the doc assumes you are running a "Serverful" configuration for your deployments, as it involves the file system.
 
@@ -232,7 +219,7 @@ Let's break down the key components of this configuration:
 **1. Upload Configuration**
 This is where you configure the fields that will receive uploads. In our case, it's the profile.avatar field.
 
-The shape of the object looks like this:
+The shape of `UploadsConfig` looks like this:
 
 ```
 [prismaModel] : {
@@ -446,12 +433,13 @@ export const updateAlbum = async ({
 
 ```
 
-### Customizing save file name
+### Customizing save file name or save path
 
 If you'd like to customize the filename that a processor will save to you can override it when calling it. For example, you could name your files by the User's id
 
 ```ts 
 await processors.processProfileUploads(data, {
+  // highlight-next-line
   fileName: 'profilePhoto-' + context.currentUser.id,
 })
 
@@ -459,5 +447,137 @@ await processors.processProfileUploads(data, {
 // /base_path/profilePhoto-58xx4ruv41f8eit0y25.png
 ```
 
-The extension is determined by the name of the uploaded file. 
+If you'd like to customize where files are saved, perhaps you want to put it in a specific folder, so you can make those files [publicly available](#making-a-folder-public), you can override the folder to use too (skipping the base path of your Storage adapter):
 
+```ts
+await processors.processProfileUploads(data, {
+  fileName: 'profilePhoto-' + context.currentUser.id,
+  // highlight-next-line
+  path: '/public_avatar'
+})
+
+// Will save files to
+// /public_avatar/profilePhoto-58xx4ruv41f8eit0y25.png
+```
+
+The extension is determined by the name of the uploaded file.
+
+## Storage Prisma Extension
+
+This Prisma extension is designed to handle file uploads and deletions in conjunction with database operations. The goal here is for you as the developer to not have to think too much in terms of files, rather just as Prisma operations. The extension ensures that file uploads are properly managed alongside database operations, preventing orphaned files and maintaining consistency between the database and the storage.
+
+
+The extension will _only_ operate on fields and models configured in your `UploadConfig` which you configure in [`api/src/lib/uploads.{js,ts}`](#setting-up-storage-processors-and-prisma-extension).
+
+### `create` & `createMany` operations
+If your create operation fails, it removes any uploaded files to avoid orphaned files (so you can retry the request)
+
+### `update` & `updateMany` operations
+1. If update operation is successful, removes the old uploaded files
+2. If it fails, removes any newly uploaded files (so you can retry the request)
+
+### `delete` operations
+Removes any associated uploaded files, once delete operation completes.
+
+
+
+## Result Extensions
+<!--INCOMPLETE -->
+<!--INCOMPLETE -->
+<!--INCOMPLETE -->
+<!--INCOMPLETE -->
+
+### Signed URLs
+<!--INCOMPLETE -->
+<!--INCOMPLETE -->
+<!--INCOMPLETE -->
+
+### Data URIs
+<!--INCOMPLETE -->
+<!--INCOMPLETE -->
+<!--INCOMPLETE -->
+
+
+## Configuring the server further
+Sometimes, you may need more control over how the Redwood API server behaves. This could include customizing the body limit for requests, redirects, or implementing additional logic - that's exactly what the [Server File](server-file.md) is for!
+
+
+### Making a folder public
+
+
+While you can always create a function to access certain files publicly, similar to the `/signedUrl` function that gets generated for you - another way could be to configure the API server with the [fastify-static](https://github.com/fastify/fastify-static) plugin to make a specific folder publicly accessible. 
+
+```js title="api/server.js"
+import path from 'path'
+// highlight-next-line
+import fastifyStatic from '@fastify/static'
+
+import { createServer } from '@redwoodjs/api-server'
+import { logger } from 'src/lib/logger'
+
+async function main() {
+  const server = await createServer({
+    logger,
+  })
+
+// highlight-start
+  server.register(fastifyStatic, {
+    root: path.join(process.cwd() + '/uploads/public_profile_photos'),
+    prefix: '/public_uploads',
+  })
+// highlight-end
+
+  await server.start()
+}
+
+main()
+
+```
+
+Based on the above, you'll be able to access your files at:
+
+```
+http://localhost:8910/.redwood/functions/public_uploads/01J6AF89Y89WTWZF12DRC72Q2A.jpeg
+
+OR directly
+
+http://localhost:8911/public_uploads/01J6AF89Y89WTWZF12DRC72Q2A.jpeg
+
+```
+Where you are only exposing __part__ of your uploads directory publicly
+
+
+
+
+### Customising the body limit for requests
+Depending on the sizes of files you're uploading, especially in the case of multiple files, if you receive errors like this:
+
+```json
+{
+"code":"FST_ERR_CTP_BODY_TOO_LARGE",
+"error":"Payload Too Large",
+"message":"Request body is too large"
+}
+```
+The default body size limit for the Redwood API server is 100MB (per request). 
+
+
+```js title="api/server.js"
+import { createServer } from '@redwoodjs/api-server'
+
+import { logger } from 'src/lib/logger'
+
+async function main() {
+  const server = await createServer({
+    logger,
+    fastifyServerOptions: {
+      // highlight-next-line
+      bodyLimit: 1024 * 1024 * 500, // 500MB
+    },
+  })
+
+  await server.start()
+}
+
+main()
+```
